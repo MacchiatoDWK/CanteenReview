@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>新增评论</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Helvetica", sans-serif;
+      background-color: #fff89a;
+    }
+
+    .container {
+      padding: 16px;
+      padding-bottom: 120px;
+    }
+
+    .section {
+      background-color: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+
+    select, textarea, input[type="file"] {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .stars {
+      display: flex;
+      font-size: 24px;
+      gap: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .stars span {
+      color: #ccc;
+      transition: color 0.2s;
+    }
+
+    .stars span.selected {
+      color: gold;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #89f0ff;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .tip {
+      font-size: 12px;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    #preview {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .thumb-wrapper {
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+
+    .thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 3px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border-radius: 50%;
+      border: none;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* 放大图预览 */
+    #modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+    }
+
+    /* 底部导航栏 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #ccf5e7;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #ccc;
+    }
+
+    .bottom-nav button {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #000;
+      padding: 4px 12px;
+    }
+
+    .bottom-nav .plus-button {
+      background-color: #ff69b4;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transform: translateY(-24px);
+      border: none;
+      z-index: 2;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translateY(-24px) scale(1); }
+      50% { transform: translateY(-24px) scale(1.08); }
+      100% { transform: translateY(-24px) scale(1); }
+    }
+
+    @media (min-width: 600px) {
+      .container {
+        max-width: 500px;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="section">
+      <label>选择食堂：</label>
+      <select><option>美食园</option><option>奥运食堂</option></select>
+      <label>选择档口：</label>
+      <select><option>档口1</option><option>档口2</option></select>
+      <label>选择菜品：</label>
+      <select><option>菜品1</option><option>菜品2</option></select>
+    </div>
+
+    <div class="section">
+      <label>评分：</label>
+      <div class="stars" id="starRating">
+        <span data-value="1">★</span>
+        <span data-value="2">★</span>
+        <span data-value="3">★</span>
+        <span data-value="4">★</span>
+        <span data-value="5">★</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <label>评论内容：</label>
+      <textarea placeholder="请输入你的评论..."></textarea>
+    </div>
+
+    <div class="section">
+      <label id="uploadLabel" for="imageUpload">上传图片（最多9张）：</label>
+      <input type="file" id="imageUpload" accept="image/*" multiple style="margin-top: 8px;" />
+      <div class="tip" id="imageTip">已选择 0 张图片</div>
+      <div id="preview"></div>
+    </div>
+
+    <button class="submit-btn">提交评论</button>
+  </div>
+
+  <!-- 缩略图放大预览 -->
+  <div id="modal" onclick="this.style.display='none'">
+    <img id="modal-img" src="" />
+  </div>
+
+  <!-- 底部导航栏 -->
+  <nav class="bottom-nav">
+    <button onclick="location.href='index.html'">首页</button>
+    <button class="plus-button" onclick="location.href='add.html'">＋</button>
+    <button onclick="location.href='mine.html'">我的</button>
+  </nav>
+
+  <script>
+    const stars = document.querySelectorAll('#starRating span');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const rating = parseInt(star.dataset.value);
+        stars.forEach(s => {
+          s.classList.toggle('selected', parseInt(s.dataset.value) <= rating);
+        });
+      });
+    });
+
+    const fileInput = document.getElementById('imageUpload');
+    const imageTip = document.getElementById('imageTip');
+    const preview = document.getElementById('preview');
+    const uploadLabel = document.getElementById('uploadLabel');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+
+    let images = [];
+
+    function updatePreview() {
+  	preview.innerHTML = '';
+  	images.forEach((imgData, index) => {
+    		const wrapper = document.createElement('div');
+    		wrapper.className = 'thumb-wrapper';
+
+    		const img = document.createElement('img');
+    		img.src = imgData;
+    		img.className = 'thumb';
+    		img.onclick = () => {
+      		modal.style.display = 'flex';
+      		modalImg.src = imgData;
+    		};
+
+    		const del = document.createElement('button');
+    		del.innerText = '×';
+    		del.className = 'delete-btn';
+    		del.onclick = () => {
+      		images.splice(index, 1);
+      		updatePreview();
+    		};
+
+    		wrapper.appendChild(img);
+    		wrapper.appendChild(del);
+    		preview.appendChild(wrapper);
+  	});
+
+  	imageTip.textContent = `已选择 ${images.length} 张图片`;
+
+  	// 修改这一行来根据图片数量切换文字
+  	uploadLabel.textContent = images.length === 0 
+    		? "上传图片（最多9张）：" 
+    		: "继续选择图片：";
+	}
+
+    fileInput.addEventListener('change', () => {
+      const files = Array.from(fileInput.files);
+      if (images.length + files.length > 9) {
+        alert("总共最多只能上传 9 张图片");
+        fileInput.value = '';
+        return;
+      }
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          images.push(e.target.result);
+          updatePreview();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      fileInput.value = ''; // 清空以便下次可选同一文件
+    });
+  </script>
+</body>
+</html>

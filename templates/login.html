@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>登录 / 注册</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Helvetica", sans-serif;
+      background-color: #fff89a;
+    }
+
+    .container {
+      padding: 24px;
+      padding-bottom: 100px;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    /* 返回按钮样式 */
+    .back-button {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 8px 12px;
+      background-color: #fef3c7;
+      border-left: 4px solid #facc15;
+      color: #333;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .form-box {
+      background-color: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .row input {
+      flex: 1;
+    }
+
+    .row button {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: none;
+      background-color: #facc15;
+      color: black;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #89f0ff;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    .switch a {
+      color: #0077cc;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .bottom-space {
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 返回按钮 -->
+    <a href="mine.html" class="back-button">← 返回“我的”</a>
+
+    <!-- 登录表单 -->
+    <div class="form-box" id="loginForm">
+      <h2>用户登录</h2>
+      <div class="input-group">
+        <label for="login-username">用户名</label>
+        <input type="text" id="login-username" placeholder="请输入用户名" />
+      </div>
+      <div class="input-group">
+        <label for="login-password">密码</label>
+        <input type="password" id="login-password" placeholder="请输入密码" />
+      </div>
+      <button class="submit-btn">登录</button>
+      <div class="switch">没有账号？<a onclick="switchToRegister()">注册</a></div>
+    </div>
+
+    <!-- 注册表单 -->
+    <div class="form-box" id="registerForm" style="display: none;">
+      <h2>用户注册</h2>
+      <div class="input-group">
+        <label for="register-email">邮箱</label>
+        <input type="email" id="register-email" placeholder="请输入邮箱" />
+      </div>
+      <div class="input-group">
+        <label for="register-password">密码</label>
+        <input type="password" id="register-password" placeholder="请输入密码" />
+      </div>
+      <div class="input-group">
+        <label for="register-confirm">确认密码</label>
+        <input type="password" id="register-confirm" placeholder="请再次输入密码" />
+      </div>
+      <div class="input-group">
+        <label for="register-code">验证码</label>
+        <div class="row">
+          <input type="text" id="register-code" placeholder="请输入验证码" />
+          <button type="button" onclick="sendCode()">发送验证码</button>
+        </div>
+      </div>
+      <button class="submit-btn">注册</button>
+      <div class="switch">已有账号？<a onclick="switchToLogin()">登录</a></div>
+    </div>
+  </div>
+
+  <div class="bottom-space"></div>
+
+  <script>
+    function switchToRegister() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('registerForm').style.display = 'block';
+    }
+
+    function switchToLogin() {
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    }
+
+    function sendCode() {
+      alert("验证码已发送到邮箱（模拟）");
+    }
+  </script>
+</body>
+</html>
