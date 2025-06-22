@@ -3,39 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>校园食堂点评系统 - 管理员界面</title>
+  <title>个人中心 - 管理员界面</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .btn-glow:hover {
-      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6);
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
 
-  <!-- 顶部导航条 -->
-  <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 z-50 rounded-b-xl">
+  <!-- 导航栏（保持一致） -->
+  <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 left-0 right-0 z-50 rounded-b-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         <div class="text-xl font-bold text-green-600">校园食堂点评系统</div>
-
-        <!-- 菜单按钮（移动端） -->
         <div class="md:hidden">
-          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">
-            ☰
-          </button>
+          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
-
-        <!-- 桌面导航项 -->
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
           <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
           <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
           <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
           <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
 
-      <!-- 移动端菜单展开（右对齐） -->
       <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
         <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
             <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
@@ -60,29 +58,33 @@
   </nav>
 
   <!-- 主体内容 -->
-  <main class="flex-grow flex flex-col items-center justify-center px-4 py-16 space-y-12">
-    <h1 class="text-4xl font-extrabold text-gray-800 drop-shadow-sm">欢迎使用管理员控制台</h1>
+  <main class="flex-grow px-6 py-10 max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-10">管理员账号管理</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl w-full px-4">
-
-      <!-- 注册认证按钮 -->
-      <a href="admin_register.html" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
-        <img src="/static/user.png" alt="注册认证" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
-        <div class="p-6 text-center">
-          <h2 class="text-2xl font-semibold text-green-700">注册认证</h2>
-          <p class="text-gray-500 mt-2">管理员可审核学生或商家的注册请求</p>
-        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <!-- 管理员卡片模板 -->
+      <a href="edit_admin.html?id=1" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
+        <img src="https://source.unsplash.com/100x100/?face1" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
+        <h3 class="text-xl font-semibold text-gray-700">张伟</h3>
+        <p class="text-sm text-gray-500">管理员</p>
+        <p class="text-sm text-gray-400 mt-1">ID: 1</p>
       </a>
 
-      <!-- 食堂管理按钮 -->
-      <a href="admin_canteen_manage.html" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
-        <img src="/static/canteen.jpg" alt="食堂管理" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
-        <div class="p-6 text-center">
-          <h2 class="text-2xl font-semibold text-green-700">食堂管理</h2>
-          <p class="text-gray-500 mt-2">添加、编辑或下架食堂、窗口、菜品信息</p>
-        </div>
+      <a href="edit_admin.html?id=2" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
+        <img src="https://source.unsplash.com/100x100/?face2" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
+        <h3 class="text-xl font-semibold text-gray-700">李娜</h3>
+        <p class="text-sm text-gray-500">管理员</p>
+        <p class="text-sm text-gray-400 mt-1">ID: 2</p>
       </a>
 
+      <a href="edit_admin.html?id=3" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
+        <img src="https://source.unsplash.com/100x100/?face3" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
+        <h3 class="text-xl font-semibold text-gray-700">王强</h3>
+        <p class="text-sm text-gray-500">管理员</p>
+        <p class="text-sm text-gray-400 mt-1">ID: 3</p>
+      </a>
+
+      <!-- 继续添加更多管理员 -->
     </div>
   </main>
 
@@ -91,7 +93,7 @@
     © 2025 校园食堂点评系统 - 管理员界面
   </footer>
 
-  <!-- JS 控制菜单切换 -->
+  <!-- 菜单控制脚本 -->
   <script>
     const menuBtn = document.getElementById("menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");

@@ -28,6 +28,8 @@ from mine.views import rank
 from admin.views import admin
 from admin.views import admin_register
 from admin.views import admin_canteen_manage
+from admin.views import admin_center
+from admin.views import admin_message_center
 
 
 urlpatterns = [
@@ -45,4 +47,6 @@ urlpatterns = [
     path('admin.html', admin),
     path('admin_register.html', admin_register),
     path('admin_canteen_manage.html', admin_canteen_manage),
+    path('admin_center.html', admin_center),
+    path('admin_message_center.html', admin_message_center),
 ]

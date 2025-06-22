@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>食堂管理 - 管理员界面</title>
+  <title>食堂管理</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .btn-glow:hover {
-      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    .card {
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.1);
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
-
-  <!-- 顶部导航栏 -->
+  <!-- 导航栏 -->
   <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 left-0 right-0 z-50 rounded-b-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
@@ -22,136 +25,151 @@
           <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="#" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="#" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="#" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="#" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
-      <div id="mobile-menu" class="md:hidden hidden flex flex-col items-end space-y-2 mt-2 text-gray-700 font-medium">
-        <a href="#" class="block px-4 py-2 hover:text-green-500">个人中心</a>
-        <a href="#" class="block px-4 py-2 hover:text-green-500">消息中心</a>
-        <a href="#" class="block px-4 py-2 hover:text-green-500">注册认证</a>
-        <a href="#" class="block px-4 py-2 hover:text-green-500">食堂管理</a>
+      <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
+        <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
+          <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>👤</span> <span>个人中心</span>
+          </a>
+          <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>📩</span> <span>消息中心</span>
+          </a>
+          <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>📝</span> <span>注册认证</span>
+          </a>
+          <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>🏠</span> <span>食堂管理</span>
+          </a>
+          <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>🖥️</span> <span>控制台</span>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- 主体内容 -->
-  <main class="flex-grow px-6 py-10 max-w-7xl mx-auto space-y-14">
-    <section class="space-y-12">
-      <!-- 1. 风味餐厅 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">风味餐厅</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?soup" class="rounded-full w-20 h-20 object-cover mb-3" alt="四川麻辣烫">
-            <h3 class="font-semibold text-gray-700">四川麻辣烫</h3>
-            <p class="text-sm text-gray-500">窗口编号：F01</p>
-          </a>
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?noodles" class="rounded-full w-20 h-20 object-cover mb-3" alt="重庆小面">
-            <h3 class="font-semibold text-gray-700">重庆小面</h3>
-            <p class="text-sm text-gray-500">窗口编号：F02</p>
-          </a>
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?rice" class="rounded-full w-20 h-20 object-cover mb-3" alt="湖南炒饭">
-            <h3 class="font-semibold text-gray-700">湖南炒饭</h3>
-            <p class="text-sm text-gray-500">窗口编号：F03</p>
-          </a>
-        </div>
-      </div>
+  <main class="flex-grow px-6 py-10 max-w-5xl mx-auto space-y-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">食堂管理</h1>
 
-      <!-- 2. 美食园 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">美食园</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?dumpling" class="rounded-full w-20 h-20 object-cover mb-3" alt="饺子馆">
-            <h3 class="font-semibold text-gray-700">饺子馆</h3>
-            <p class="text-sm text-gray-500">窗口编号：M01</p>
-          </a>
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?bbq" class="rounded-full w-20 h-20 object-cover mb-3" alt="铁板烧">
-            <h3 class="font-semibold text-gray-700">铁板烧</h3>
-            <p class="text-sm text-gray-500">窗口编号：M02</p>
-          </a>
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?fish" class="rounded-full w-20 h-20 object-cover mb-3" alt="水煮鱼">
-            <h3 class="font-semibold text-gray-700">水煮鱼</h3>
-            <p class="text-sm text-gray-500">窗口编号：M03</p>
-          </a>
-        </div>
+    <!-- 查询模块 -->
+    <section class="bg-white rounded-xl shadow-lg p-6 space-y-6">
+      <h2 class="text-xl font-semibold text-gray-700">查询菜品</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+        <input id="canteenInput" type="text" placeholder="输入食堂名称" class="border rounded px-3 py-2" />
+        <input id="stallInput" type="text" placeholder="输入档口名称" class="border rounded px-3 py-2" />
+        <input id="dishInput" type="text" placeholder="输入菜品名称（可选）" class="border rounded px-3 py-2" />
+        <button onclick="searchDish()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+          🔍 查询
+        </button>
       </div>
-
-      <!-- 3. 奥运餐厅 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">奥运餐厅</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?japanese,food" class="rounded-full w-20 h-20 object-cover mb-3" alt="日料寿司">
-            <h3 class="font-semibold text-gray-700">日料寿司</h3>
-            <p class="text-sm text-gray-500">窗口编号：O01</p>
-          </a>
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?ramen" class="rounded-full w-20 h-20 object-cover mb-3" alt="日式拉面">
-            <h3 class="font-semibold text-gray-700">日式拉面</h3>
-            <p class="text-sm text-gray-500">窗口编号：O02</p>
-          </a>
-        </div>
+      <div id="resultCard" class="hidden card bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
+        <p class="text-gray-800"><strong>食堂：</strong><span id="resCanteen"></span></p>
+        <p class="text-gray-800"><strong>档口：</strong><span id="resStall"></span></p>
+        <p class="text-gray-800"><strong>菜品：</strong><span id="resDish"></span></p>
+        <button onclick="deleteCard()" class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">
+          🗑 删除
+        </button>
       </div>
+      <div id="notFound" class="hidden text-red-600 font-medium">❌ 没有查询到对应信息。</div>
+    </section>
 
-      <!-- 4. 天天餐厅 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">天天餐厅</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?curry" class="rounded-full w-20 h-20 object-cover mb-3" alt="咖喱饭">
-            <h3 class="font-semibold text-gray-700">咖喱饭</h3>
-            <p class="text-sm text-gray-500">窗口编号：T01</p>
-          </a>
-        </div>
+    <!-- 添加模块 -->
+    <section class="bg-white rounded-xl shadow-lg p-6 space-y-6">
+      <h2 class="text-xl font-semibold text-gray-700">新增菜品</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <input id="addCanteen" type="text" placeholder="输入食堂名称" class="border px-3 py-2 rounded" />
+        <input id="addStall" type="text" placeholder="输入档口名称" class="border px-3 py-2 rounded" />
+        <input id="addDish" type="text" placeholder="输入菜品名称" class="border px-3 py-2 rounded" />
+        <button onclick="submitDish()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+          ➕ 提交
+        </button>
       </div>
-
-      <!-- 5. 天天食堂 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">天天食堂</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?steamed-bun" class="rounded-full w-20 h-20 object-cover mb-3" alt="包子铺">
-            <h3 class="font-semibold text-gray-700">包子铺</h3>
-            <p class="text-sm text-gray-500">窗口编号：TT01</p>
-          </a>
-        </div>
-      </div>
-
-      <!-- 6. 清真食堂 -->
-      <div class="space-y-6">
-        <h2 class="text-3xl font-bold text-gray-800">清真食堂</h2>
-        <div class="flex flex-wrap gap-6">
-          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
-            <img src="https://source.unsplash.com/100x100/?halal" class="rounded-full w-20 h-20 object-cover mb-3" alt="新疆拌面">
-            <h3 class="font-semibold text-gray-700">新疆拌面</h3>
-            <p class="text-sm text-gray-500">窗口编号：Q01</p>
-          </a>
-        </div>
-      </div>
-
+      <p id="submitNotice" class="text-green-600 text-sm hidden">✅ 新菜品提交成功！</p>
     </section>
   </main>
 
-  <!-- 底部 -->
   <footer class="bg-white/70 backdrop-blur text-center py-4 text-gray-500 text-sm shadow-inner rounded-t-xl">
-    © 2025 校园食堂点评系统 - 管理员界面
+    © 2025 校园食堂点评系统
   </footer>
 
-  <!-- 菜单控制脚本 -->
   <script>
-    const menuBtn = document.getElementById("menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    menuBtn.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
+    document.getElementById("menu-btn").onclick = () => {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
+    };
+
+    const data = {
+      "风味餐厅": {
+        "窗口一": ["红烧鸡腿", "宫保鸡丁"],
+        "窗口二": ["青椒肉丝", "酸辣土豆丝"]
+      },
+      "美食园": {
+        "窗口一": ["麻辣香锅", "番茄炒蛋"],
+        "窗口二": ["鱼香肉丝"]
+      }
+    };
+
+    function searchDish() {
+      const canteen = document.getElementById("canteenInput").value.trim();
+      const stall = document.getElementById("stallInput").value.trim();
+      const dish = document.getElementById("dishInput").value.trim();
+
+      const foundCanteen = data[canteen];
+      if (!foundCanteen) return showNotFound();
+
+      const foundStall = foundCanteen[stall];
+      if (!foundStall) return showNotFound();
+
+      if (dish && !foundStall.includes(dish)) return showNotFound();
+
+      document.getElementById("resCanteen").textContent = canteen;
+      document.getElementById("resStall").textContent = stall;
+      document.getElementById("resDish").textContent = dish || "（未指定）";
+
+      document.getElementById("resultCard").classList.remove("hidden");
+      document.getElementById("notFound").classList.add("hidden");
+    }
+
+    function deleteCard() {
+      const canteen = document.getElementById("resCanteen").textContent;
+      const stall = document.getElementById("resStall").textContent;
+      const dish = document.getElementById("resDish").textContent;
+
+      if (dish && dish !== "（未指定）") {
+        data[canteen][stall] = data[canteen][stall].filter(d => d !== dish);
+        alert(`已删除菜品：${dish}`);
+      } else {
+        delete data[canteen][stall];
+        alert(`已删除档口：${stall}`);
+      }
+      document.getElementById("resultCard").classList.add("hidden");
+    }
+
+    function submitDish() {
+      const c = document.getElementById("addCanteen").value.trim();
+      const s = document.getElementById("addStall").value.trim();
+      const d = document.getElementById("addDish").value.trim();
+
+      if (c && s && d) {
+        if (!data[c]) data[c] = {};
+        if (!data[c][s]) data[c][s] = [];
+        data[c][s].push(d);
+        document.getElementById("submitNotice").classList.remove("hidden");
+        setTimeout(() => {
+          document.getElementById("submitNotice").classList.add("hidden");
+        }, 3000);
+      }
+    }
+
+    function showNotFound() {
+      document.getElementById("resultCard").classList.add("hidden");
+      document.getElementById("notFound").classList.remove("hidden");
+    }
   </script>
 </body>
 </html>

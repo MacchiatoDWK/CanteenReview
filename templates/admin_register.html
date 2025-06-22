@@ -6,8 +6,11 @@
   <title>注册认证 - 管理员界面</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .btn-glow:hover {
+    .btn-glow-green:hover {
       box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6);
+    }
+    .btn-glow-red:hover {
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
     }
   </style>
 </head>
@@ -22,18 +25,34 @@
           <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="../personal/" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="../message/" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
           <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
           <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
-      <div id="mobile-menu" class="md:hidden hidden flex flex-col items-end space-y-2 mt-2 text-gray-700 font-medium">
-          <a href="../personal/" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="../message/" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+
+      <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
+        <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
+            <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+                <span>👤</span> <span>个人中心</span>
+            </a>
+            <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>📩</span> <span>消息中心</span>
+            </a>
+            <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>📝</span> <span>注册认证</span>
+            </a>
+            <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>🏠</span> <span>食堂管理</span>
+            </a>
+            <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>🖥️</span> <span>控制台</span>
+            </a>
+          </div>
       </div>
+
     </div>
   </nav>
 
@@ -56,8 +75,8 @@
               <p><span class="font-semibold">注册时间：</span> 2025-06-22 14:33</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition">驳回</button>
+              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
+              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
             </div>
           </div>
           <!-- 更多用户条目... -->
@@ -71,8 +90,8 @@
               <p><span class="font-semibold">注册时间：</span> 2025-06-22 15:06</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition">驳回</button>
+              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
+              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
             </div>
           </div>
         </div>
@@ -92,8 +111,8 @@
               <p><span class="font-semibold">注册时间：</span> 2025-06-21 09:15</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition">驳回</button>
+              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
+              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
             </div>
           </div>
           <!-- 更多商家条目... -->
@@ -106,8 +125,8 @@
               <p><span class="font-semibold">注册时间：</span> 2025-06-21 09:37</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition">驳回</button>
+              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
+              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow btn-glow-red">驳回</button>
             </div>
           </div>
         </div>

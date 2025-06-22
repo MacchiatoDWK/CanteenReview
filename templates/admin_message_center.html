@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>消息中心 - 管理员界面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .msg-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.2);
+    }
+    .msg-card {
+      transition: all 0.3s ease;
+    }
+    .msg-btn {
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
+
+  <!-- 顶部导航栏（略） -->
+  <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 left-0 right-0 z-50 rounded-b-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="text-xl font-bold text-green-600">校园食堂点评系统</div>
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
+        </div>
+        <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
+          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
+        </div>
+      </div>
+
+      <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
+        <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
+            <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+                <span>👤</span> <span>个人中心</span>
+            </a>
+            <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>📩</span> <span>消息中心</span>
+            </a>
+            <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>📝</span> <span>注册认证</span>
+            </a>
+            <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>🏠</span> <span>食堂管理</span>
+            </a>
+            <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+              <span>🖥️</span> <span>控制台</span>
+            </a>
+          </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- 主体内容 -->
+  <main class="flex-grow px-6 py-10 max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">消息中心</h1>
+
+    <div class="space-y-6">
+
+      <!-- 消息卡片 -->
+      <div class="bg-white rounded-xl shadow p-6 msg-card" id="msg1">
+        <div class="flex justify-between items-start flex-wrap gap-4">
+          <div class="space-y-2">
+            <h2 class="text-lg font-semibold text-gray-700">来自：用户 张三</h2>
+            <p class="text-gray-600">反馈内容：天天食堂的米饭今天有点硬，希望能改进一下，谢谢！</p>
+            <p class="text-sm text-gray-400">发送时间：2025-06-22 08:45</p>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <button class="msg-btn bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium" onclick="handleClick(this)">
+              未处理
+            </button>
+            <button class="bg-gray-300 hover:bg-red-500 text-gray-800 hover:text-white px-4 py-2 rounded-full text-sm font-medium" onclick="deleteMessage(this)">
+              删除
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 其他卡片可继续复制 -->
+      <div class="bg-white rounded-xl shadow p-6 msg-card" id="msg2">
+        <div class="flex justify-between items-start flex-wrap gap-4">
+          <div class="space-y-2">
+            <h2 class="text-lg font-semibold text-gray-700">来自：商家 风味餐厅窗口3</h2>
+            <p class="text-gray-600">反馈内容：我们已调整菜单，申请更新食堂系统中的菜单信息。</p>
+            <p class="text-sm text-gray-400">发送时间：2025-06-21 16:10</p>
+          </div>
+          <div class="flex flex-col space-y-2">
+            <button class="msg-btn bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium" onclick="handleClick(this)">
+              未处理
+            </button>
+            <button class="bg-gray-300 hover:bg-red-500 text-gray-800 hover:text-white px-4 py-2 rounded-full text-sm font-medium" onclick="deleteMessage(this)">
+              删除
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 底部 -->
+  <footer class="bg-white/70 backdrop-blur text-center py-4 text-gray-500 text-sm shadow-inner rounded-t-xl">
+    © 2025 校园食堂点评系统 - 管理员界面
+  </footer>
+
+  <!-- 脚本：导航栏 + 按钮处理 -->
+  <script>
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+
+    function handleClick(button) {
+      button.textContent = "处理完成";
+      button.classList.remove("bg-red-500");
+      button.classList.add("bg-green-500");
+    }
+
+    function deleteMessage(button) {
+      const card = button.closest(".msg-card");
+      card.remove(); // 从 DOM 中删除整张卡片
+    }
+  </script>
+</body>
+</html>
