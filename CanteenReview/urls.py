@@ -21,11 +21,13 @@ from mine.views import mine
 from addReview.views import addreview
 from search.views import search
 from mine.views import login
-from mine.views import admin
 from mine.views import manager
 from mine.views import my_comments
 from mine.views import feedback
 from mine.views import rank
+from admin.views import admin
+from admin.views import admin_register
+from admin.views import admin_canteen_manage
 
 
 urlpatterns = [
@@ -40,4 +42,7 @@ urlpatterns = [
     path('feedback.html', feedback),
     path('ranking.html', rank),
     path('', index),
+    path('admin.html', admin),
+    path('admin_register.html', admin_register),
+    path('admin_canteen_manage.html', admin_canteen_manage),
 ]

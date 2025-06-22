@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>食堂管理 - 管理员界面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .btn-glow:hover {
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
+
+  <!-- 顶部导航栏 -->
+  <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 left-0 right-0 z-50 rounded-b-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="text-xl font-bold text-green-600">校园食堂点评系统</div>
+        <div class="md:hidden">
+          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
+        </div>
+        <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
+          <a href="#" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="#" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="#" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="#" class="hover:text-green-500 transition duration-200">食堂管理</a>
+        </div>
+      </div>
+      <div id="mobile-menu" class="md:hidden hidden flex flex-col items-end space-y-2 mt-2 text-gray-700 font-medium">
+        <a href="#" class="block px-4 py-2 hover:text-green-500">个人中心</a>
+        <a href="#" class="block px-4 py-2 hover:text-green-500">消息中心</a>
+        <a href="#" class="block px-4 py-2 hover:text-green-500">注册认证</a>
+        <a href="#" class="block px-4 py-2 hover:text-green-500">食堂管理</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主体内容 -->
+  <main class="flex-grow px-6 py-10 max-w-7xl mx-auto space-y-14">
+    <section class="space-y-12">
+      <!-- 1. 风味餐厅 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">风味餐厅</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?soup" class="rounded-full w-20 h-20 object-cover mb-3" alt="四川麻辣烫">
+            <h3 class="font-semibold text-gray-700">四川麻辣烫</h3>
+            <p class="text-sm text-gray-500">窗口编号：F01</p>
+          </a>
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?noodles" class="rounded-full w-20 h-20 object-cover mb-3" alt="重庆小面">
+            <h3 class="font-semibold text-gray-700">重庆小面</h3>
+            <p class="text-sm text-gray-500">窗口编号：F02</p>
+          </a>
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?rice" class="rounded-full w-20 h-20 object-cover mb-3" alt="湖南炒饭">
+            <h3 class="font-semibold text-gray-700">湖南炒饭</h3>
+            <p class="text-sm text-gray-500">窗口编号：F03</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. 美食园 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">美食园</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?dumpling" class="rounded-full w-20 h-20 object-cover mb-3" alt="饺子馆">
+            <h3 class="font-semibold text-gray-700">饺子馆</h3>
+            <p class="text-sm text-gray-500">窗口编号：M01</p>
+          </a>
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?bbq" class="rounded-full w-20 h-20 object-cover mb-3" alt="铁板烧">
+            <h3 class="font-semibold text-gray-700">铁板烧</h3>
+            <p class="text-sm text-gray-500">窗口编号：M02</p>
+          </a>
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?fish" class="rounded-full w-20 h-20 object-cover mb-3" alt="水煮鱼">
+            <h3 class="font-semibold text-gray-700">水煮鱼</h3>
+            <p class="text-sm text-gray-500">窗口编号：M03</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. 奥运餐厅 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">奥运餐厅</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?japanese,food" class="rounded-full w-20 h-20 object-cover mb-3" alt="日料寿司">
+            <h3 class="font-semibold text-gray-700">日料寿司</h3>
+            <p class="text-sm text-gray-500">窗口编号：O01</p>
+          </a>
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?ramen" class="rounded-full w-20 h-20 object-cover mb-3" alt="日式拉面">
+            <h3 class="font-semibold text-gray-700">日式拉面</h3>
+            <p class="text-sm text-gray-500">窗口编号：O02</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. 天天餐厅 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">天天餐厅</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?curry" class="rounded-full w-20 h-20 object-cover mb-3" alt="咖喱饭">
+            <h3 class="font-semibold text-gray-700">咖喱饭</h3>
+            <p class="text-sm text-gray-500">窗口编号：T01</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. 天天食堂 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">天天食堂</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?steamed-bun" class="rounded-full w-20 h-20 object-cover mb-3" alt="包子铺">
+            <h3 class="font-semibold text-gray-700">包子铺</h3>
+            <p class="text-sm text-gray-500">窗口编号：TT01</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- 6. 清真食堂 -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800">清真食堂</h2>
+        <div class="flex flex-wrap gap-6">
+          <a href="stall_menu.html" class="w-[200px] bg-white rounded-xl shadow-md hover:shadow-xl transition p-4 text-center flex flex-col items-center btn-glow">
+            <img src="https://source.unsplash.com/100x100/?halal" class="rounded-full w-20 h-20 object-cover mb-3" alt="新疆拌面">
+            <h3 class="font-semibold text-gray-700">新疆拌面</h3>
+            <p class="text-sm text-gray-500">窗口编号：Q01</p>
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- 底部 -->
+  <footer class="bg-white/70 backdrop-blur text-center py-4 text-gray-500 text-sm shadow-inner rounded-t-xl">
+    © 2025 校园食堂点评系统 - 管理员界面
+  </footer>
+
+  <!-- 菜单控制脚本 -->
+  <script>
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+  </script>
+</body>
+</html>
