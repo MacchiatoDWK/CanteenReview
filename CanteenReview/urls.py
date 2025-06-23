@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
 from django.shortcuts import HttpResponse
 from mainPage.views import index
@@ -25,11 +24,8 @@ from mine.views import manager
 from mine.views import my_comments
 from mine.views import feedback
 from mine.views import rank
-from admin.views import admin
-from admin.views import admin_register
-from admin.views import admin_canteen_manage
-from admin.views import admin_center
-from admin.views import admin_message_center
+from admin import views
+
 
 
 urlpatterns = [
@@ -38,15 +34,20 @@ urlpatterns = [
     path('add.html', addreview),
     path('search.html', search),
     path('login.html', login),
-    path('admin.html', admin),
+    #path('admin.html', admin),
     path('manager.html', manager),
     path('my-comments.html', my_comments),
     path('feedback.html', feedback),
     path('ranking.html', rank),
     path('', index),
-    path('admin.html', admin),
-    path('admin_register.html', admin_register),
-    path('admin_canteen_manage.html', admin_canteen_manage),
-    path('admin_center.html', admin_center),
-    path('admin_message_center.html', admin_message_center),
+    #path('admin.html', admin),
+    #path('admin_register.html', admin_register),
+    #path('admin_canteen_manage.html', admin_canteen_manage),
+    #path('admin_center.html', admin_center),
+    #path('admin_message_center.html', admin_message_center),
+    path('admin/', views.admin, name='admin'),
+    path('center/', views.admin_center, name='admin_center'),
+    path('messages/', views.admin_message_center, name='admin_message_center'),
+    path('register/', views.admin_register, name='admin_register'),
+    path('canteen/', views.admin_canteen_manage, name='admin_canteen_manage'),
 ]

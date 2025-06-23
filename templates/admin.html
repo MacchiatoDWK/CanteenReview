@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -9,6 +10,17 @@
     .btn-glow:hover {
       box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6);
     }
+    .card {
+      transition: all 0.3s ease;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+      background: linear-gradient(to bottom right, #f0fdf4, #ffffff);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
@@ -18,71 +30,75 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         <div class="text-xl font-bold text-green-600">校园食堂点评系统</div>
-
-        <!-- 菜单按钮（移动端） -->
         <div class="md:hidden">
-          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">
-            ☰
-          </button>
+          <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
-
-        <!-- 桌面导航项 -->
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="{% url 'admin_center' %}" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:text-green-500 transition duration-200">食堂管理</a>
         </div>
       </div>
-
-      <!-- 移动端菜单展开（右对齐） -->
       <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
         <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
-            <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-                <span>👤</span> <span>个人中心</span>
-            </a>
-            <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>📩</span> <span>消息中心</span>
-            </a>
-            <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>📝</span> <span>注册认证</span>
-            </a>
-            <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>🏠</span> <span>食堂管理</span>
-            </a>
-            <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>🖥️</span> <span>控制台</span>
-            </a>
-          </div>
+          <a href="{% url 'admin_center' %}" class="hover:bg-green-100 px-4 py-2 rounded transition">👤 个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:bg-green-100 px-4 py-2 rounded transition">📩 消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:bg-green-100 px-4 py-2 rounded transition">📝 注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:bg-green-100 px-4 py-2 rounded transition">🏠 食堂管理</a>
+          <a href="{% url 'admin' %}" class="hover:bg-green-100 px-4 py-2 rounded transition">🖥️ 控制台</a>
+        </div>
       </div>
-
     </div>
   </nav>
 
   <!-- 主体内容 -->
-  <main class="flex-grow flex flex-col items-center justify-center px-4 py-16 space-y-12">
-    <h1 class="text-4xl font-extrabold text-gray-800 drop-shadow-sm">欢迎使用管理员控制台</h1>
+  <main class="flex-grow flex flex-col items-center px-4 py-16 space-y-12">
+    <h1 class="text-4xl font-extrabold text-gray-800 drop-shadow-sm text-center">欢迎使用管理员控制台</h1>
 
+    <!-- 统计模块 -->
+    <section class="space-y-8 max-w-6xl w-full px-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="card p-6 text-center">
+          <h3 class="text-xl font-bold text-green-600 mb-2">👥 用户数量</h3>
+          <p class="text-3xl text-gray-800 font-semibold">{{ user_count }}</p>
+        </div>
+        <div class="card p-6 text-center">
+          <h3 class="text-xl font-bold text-blue-600 mb-2">🏪 商家数量</h3>
+          <p class="text-3xl text-gray-800 font-semibold">{{ merchant_count }}</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <div class="flex space-x-6 min-w-full pb-2">
+          {% for canteen in canteen_list %}
+          <div class="card min-w-[220px] p-6 flex-shrink-0">
+            <h3 class="text-xl font-semibold text-gray-700">{{ canteen.name }}</h3>
+            <p class="mt-2 text-gray-700">档口数：<strong>{{ canteen.stall_count }}</strong></p>
+            <p class="text-gray-700">菜品数：<strong>{{ canteen.dish_count }}</strong></p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- 按钮区 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl w-full px-4">
-
-      <!-- 注册认证按钮 -->
-      <a href="admin_register.html" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
-        <img src="/static/user.png" alt="注册认证" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
+      <a href="{% url 'admin_register' %}" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
+        <img src="{% static 'user.png' %}" alt="注册认证" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
         <div class="p-6 text-center">
           <h2 class="text-2xl font-semibold text-green-700">注册认证</h2>
           <p class="text-gray-500 mt-2">管理员可审核学生或商家的注册请求</p>
         </div>
       </a>
 
-      <!-- 食堂管理按钮 -->
-      <a href="admin_canteen_manage.html" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
-        <img src="/static/canteen.jpg" alt="食堂管理" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
+      <a href="{% url 'admin_canteen_manage' %}" class="group block transform hover:scale-105 transition duration-300 rounded-3xl overflow-hidden shadow-xl btn-glow bg-white border border-gray-200">
+        <img src="{% static 'canteen.jpg' %}" alt="食堂管理" class="w-full h-64 object-cover group-hover:brightness-95 transition" />
         <div class="p-6 text-center">
           <h2 class="text-2xl font-semibold text-green-700">食堂管理</h2>
           <p class="text-gray-500 mt-2">添加、编辑或下架食堂、窗口、菜品信息</p>
         </div>
       </a>
-
     </div>
   </main>
 
@@ -91,7 +107,6 @@
     © 2025 校园食堂点评系统 - 管理员界面
   </footer>
 
-  <!-- JS 控制菜单切换 -->
   <script>
     const menuBtn = document.getElementById("menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");

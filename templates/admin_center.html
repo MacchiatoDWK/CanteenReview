@@ -26,29 +26,29 @@
           <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
-          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
+          <a href="{% url 'admin_center' %}" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="{% url 'admin' %}" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
 
       <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
         <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
-            <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <a href="{% url 'admin_center' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
                 <span>👤</span> <span>个人中心</span>
             </a>
-            <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <a href="{% url 'admin_message_center' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
               <span>📩</span> <span>消息中心</span>
             </a>
-            <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <a href="{% url 'admin_register' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
               <span>📝</span> <span>注册认证</span>
             </a>
-            <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <a href="{% url 'admin_canteen_manage' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
               <span>🏠</span> <span>食堂管理</span>
             </a>
-            <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <a href="{% url 'admin' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
               <span>🖥️</span> <span>控制台</span>
             </a>
           </div>
@@ -62,29 +62,16 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-10">管理员账号管理</h1>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      <!-- 管理员卡片模板 -->
-      <a href="edit_admin.html?id=1" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
-        <img src="https://source.unsplash.com/100x100/?face1" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
-        <h3 class="text-xl font-semibold text-gray-700">张伟</h3>
+      {% for admin in admins %}
+      <a href="{% url 'edit_admin' %}?id={{ admin.id }}" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
+        <img src="{{ admin.avatar_url }}" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
+        <h3 class="text-xl font-semibold text-gray-700">{{ admin.name }}</h3>
         <p class="text-sm text-gray-500">管理员</p>
-        <p class="text-sm text-gray-400 mt-1">ID: 1</p>
+        <p class="text-sm text-gray-400 mt-1">ID: {{ admin.id }}</p>
       </a>
-
-      <a href="edit_admin.html?id=2" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
-        <img src="https://source.unsplash.com/100x100/?face2" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
-        <h3 class="text-xl font-semibold text-gray-700">李娜</h3>
-        <p class="text-sm text-gray-500">管理员</p>
-        <p class="text-sm text-gray-400 mt-1">ID: 2</p>
-      </a>
-
-      <a href="edit_admin.html?id=3" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
-        <img src="https://source.unsplash.com/100x100/?face3" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
-        <h3 class="text-xl font-semibold text-gray-700">王强</h3>
-        <p class="text-sm text-gray-500">管理员</p>
-        <p class="text-sm text-gray-400 mt-1">ID: 3</p>
-      </a>
-
-      <!-- 继续添加更多管理员 -->
+      {% empty %}
+      <p class="text-gray-500 col-span-full text-center">暂无管理员账号数据</p>
+      {% endfor %}
     </div>
   </main>
 

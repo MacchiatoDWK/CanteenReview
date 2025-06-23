@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -25,34 +26,33 @@
           <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
-          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
+          <a href="{% url 'admin_center' %}" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="{% url 'admin' %}" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
 
       <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
         <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
-            <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-                <span>👤</span> <span>个人中心</span>
-            </a>
-            <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>📩</span> <span>消息中心</span>
-            </a>
-            <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>📝</span> <span>注册认证</span>
-            </a>
-            <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>🏠</span> <span>食堂管理</span>
-            </a>
-            <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-              <span>🖥️</span> <span>控制台</span>
-            </a>
-          </div>
+          <a href="{% url 'admin_center' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>👤</span> <span>个人中心</span>
+          </a>
+          <a href="{% url 'admin_message_center' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>📩</span> <span>消息中心</span>
+          </a>
+          <a href="{% url 'admin_register' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>📝</span> <span>注册认证</span>
+          </a>
+          <a href="{% url 'admin_canteen_manage' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>🏠</span> <span>食堂管理</span>
+          </a>
+          <a href="{% url 'admin' %}" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
+            <span>🖥️</span> <span>控制台</span>
+          </a>
+        </div>
       </div>
-
     </div>
   </nav>
 
@@ -60,87 +60,74 @@
   <main class="flex-grow px-6 py-12 max-w-7xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-      <!-- 用户注册请求（左） -->
+      <!-- 用户注册请求 -->
       <section>
         <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">用户注册请求</h2>
         <div class="space-y-6">
-          <!-- 用户条目 -->
+          {% for user in user_requests %}
           <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
             <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">用户名：</span> 张三</p>
-              <p><span class="font-semibold">手机号：</span> 13800001234</p>
-              <p><span class="font-semibold">邮箱：</span> zhangsan@example.com</p>
-              <p><span class="font-semibold">学号：</span> 202512345</p>
-              <p><span class="font-semibold">学院：</span> 计算机与信息工程学院</p>
-              <p><span class="font-semibold">注册时间：</span> 2025-06-22 14:33</p>
+              <p><span class="font-semibold text-green-600">用户名：</span> {{ user.username }}</p>
+              <p><span class="font-semibold">手机号：</span> {{ user.phone }}</p>
+              <p><span class="font-semibold">邮箱：</span> {{ user.email }}</p>
+              <p><span class="font-semibold">学号：</span> {{ user.student_id }}</p>
+              <p><span class="font-semibold">学院：</span> {{ user.college }}</p>
+              <p><span class="font-semibold">注册时间：</span> {{ user.created_at }}</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
+              <form method="post" action="{% url 'approve_user' user.id %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 btn-glow-green">同意</button>
+              </form>
+              <form method="post" action="{% url 'reject_user' user.id %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 btn-glow-red">驳回</button>
+              </form>
             </div>
           </div>
-          <!-- 更多用户条目... -->
-          <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
-            <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">用户名：</span> 李四</p>
-              <p><span class="font-semibold">手机号：</span> 13800006666</p>
-              <p><span class="font-semibold">邮箱：</span> lisi@example.com</p>
-              <p><span class="font-semibold">学号：</span> 202567896</p>
-              <p><span class="font-semibold">学院：</span> 计算机与信息工程学院</p>
-              <p><span class="font-semibold">注册时间：</span> 2025-06-22 15:06</p>
-            </div>
-            <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
-            </div>
-          </div>
+          {% empty %}
+          <p class="text-gray-400 text-center">暂无用户注册请求</p>
+          {% endfor %}
         </div>
       </section>
 
-      <!-- 商家注册请求（右） -->
+      <!-- 商家注册请求 -->
       <section>
         <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">商家注册请求</h2>
         <div class="space-y-6">
-          <!-- 商家条目 -->
+          {% for merchant in merchant_requests %}
           <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
             <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">商家名称：</span> 牛掌柜盖码饭</p>
-              <p><span class="font-semibold">负责人：</span> 李老板</p>
-              <p><span class="font-semibold">营业执照编号：</span> 91320100MA2YXXX888</p>
-              <p><span class="font-semibold">联系方式：</span> 13900005555</p>
-              <p><span class="font-semibold">注册时间：</span> 2025-06-21 09:15</p>
+              <p><span class="font-semibold text-green-600">商家名称：</span> {{ merchant.shop_name }}</p>
+              <p><span class="font-semibold">负责人：</span> {{ merchant.owner_name }}</p>
+              <p><span class="font-semibold">营业执照编号：</span> {{ merchant.license_id }}</p>
+              <p><span class="font-semibold">联系方式：</span> {{ merchant.phone }}</p>
+              <p><span class="font-semibold">注册时间：</span> {{ merchant.created_at }}</p>
             </div>
             <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow-red">驳回</button>
+              <form method="post" action="{% url 'approve_merchant' merchant.id %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 btn-glow-green">同意</button>
+              </form>
+              <form method="post" action="{% url 'reject_merchant' merchant.id %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 btn-glow-red">驳回</button>
+              </form>
             </div>
           </div>
-          <!-- 更多商家条目... -->
-          <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
-            <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">商家名称：</span> 广东风味</p>
-              <p><span class="font-semibold">负责人：</span> 陈老板</p>
-              <p><span class="font-semibold">营业执照编号：</span> 91320100MA2YXXX666</p>
-              <p><span class="font-semibold">联系方式：</span> 13900006666</p>
-              <p><span class="font-semibold">注册时间：</span> 2025-06-21 09:37</p>
-            </div>
-            <div class="flex space-x-4 mt-4 justify-end">
-              <button class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition btn-glow-green">同意</button>
-              <button class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition btn-glow btn-glow-red">驳回</button>
-            </div>
-          </div>
+          {% empty %}
+          <p class="text-gray-400 text-center">暂无商家注册请求</p>
+          {% endfor %}
         </div>
       </section>
 
     </div>
   </main>
 
-  <!-- 底部 -->
   <footer class="bg-white/70 backdrop-blur text-center py-4 text-gray-500 text-sm shadow-inner rounded-t-xl">
     © 2025 校园食堂点评系统 - 管理员界面
   </footer>
 
-  <!-- 菜单控制脚本 -->
   <script>
     const menuBtn = document.getElementById("menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");

@@ -7,11 +7,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .card {
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 6px 19px rgba(0, 0, 0, 0.15);
     }
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.1);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(34, 197, 94, 0.3);
+      background: linear-gradient(to bottom right, #f0fdf4, #ffffff);
     }
   </style>
 </head>
@@ -25,50 +29,41 @@
           <button id="menu-btn" class="text-gray-700 hover:text-green-600 focus:outline-none text-2xl">☰</button>
         </div>
         <div id="menu" class="hidden md:flex md:space-x-6 text-gray-700 font-medium">
-          <a href="admin_center.html" class="hover:text-green-500 transition duration-200">个人中心</a>
-          <a href="admin_message_center.html" class="hover:text-green-500 transition duration-200">消息中心</a>
-          <a href="admin_register.html" class="hover:text-green-500 transition duration-200">注册认证</a>
-          <a href="admin_canteen_manage.html" class="hover:text-green-500 transition duration-200">食堂管理</a>
-          <a href="admin.html" class="hover:text-green-500 transition duration-200">控制台</a>
+          <a href="{% url 'admin_center' %}" class="hover:text-green-500 transition duration-200">个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:text-green-500 transition duration-200">消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:text-green-500 transition duration-200">注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:text-green-500 transition duration-200">食堂管理</a>
+          <a href="{% url 'admin' %}" class="hover:text-green-500 transition duration-200">控制台</a>
         </div>
       </div>
       <div id="mobile-menu" class="md:hidden hidden absolute right-4 top-16 w-60 z-40">
         <div class="flex flex-col text-center px-4 py-3 space-y-2 bg-white rounded-lg shadow-lg border border-gray-200">
-          <a href="admin_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-            <span>👤</span> <span>个人中心</span>
-          </a>
-          <a href="admin_message_center.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-            <span>📩</span> <span>消息中心</span>
-          </a>
-          <a href="admin_register.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-            <span>📝</span> <span>注册认证</span>
-          </a>
-          <a href="admin_canteen_manage.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-            <span>🏠</span> <span>食堂管理</span>
-          </a>
-          <a href="admin.html" class="w-full hover:bg-green-100 px-4 py-2 rounded transition flex items-center justify-center space-x-2">
-            <span>🖥️</span> <span>控制台</span>
-          </a>
+          <a href="{% url 'admin_center' %}" class="hover:text-green-500">👤 个人中心</a>
+          <a href="{% url 'admin_message_center' %}" class="hover:text-green-500">📩 消息中心</a>
+          <a href="{% url 'admin_register' %}" class="hover:text-green-500">📝 注册认证</a>
+          <a href="{% url 'admin_canteen_manage' %}" class="hover:text-green-500">🏠 食堂管理</a>
+          <a href="{% url 'admin' %}" class="hover:text-green-500">🖥️ 控制台</a>
         </div>
       </div>
     </div>
   </nav>
 
+  <!-- 主体内容 -->
   <main class="flex-grow px-6 py-10 max-w-5xl mx-auto space-y-12">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">食堂管理</h1>
 
-    <!-- 查询模块 -->
-    <section class="bg-white rounded-xl shadow-lg p-6 space-y-6">
-      <h2 class="text-xl font-semibold text-gray-700">查询菜品</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
-        <input id="canteenInput" type="text" placeholder="输入食堂名称" class="border rounded px-3 py-2" />
-        <input id="stallInput" type="text" placeholder="输入档口名称" class="border rounded px-3 py-2" />
-        <input id="dishInput" type="text" placeholder="输入菜品名称（可选）" class="border rounded px-3 py-2" />
+    <!-- 查询菜品模块 -->
+    <section class="card p-6 space-y-4">
+      <h2 class="text-xl font-semibold text-gray-700">查询菜品 / 档口</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <input id="queryCanteen" type="text" placeholder="食堂" class="border px-3 py-2 rounded" />
+        <input id="queryStall" type="text" placeholder="档口" class="border px-3 py-2 rounded" />
+        <input id="queryDish" type="text" placeholder="菜品（可选）" class="border px-3 py-2 rounded" />
         <button onclick="searchDish()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
           🔍 查询
         </button>
       </div>
-      <div id="resultCard" class="hidden card bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
+      <div id="resultCard" class="hidden card bg-green-50 border border-green-200 rounded-lg p-4 space-y-2 mt-4">
         <p class="text-gray-800"><strong>食堂：</strong><span id="resCanteen"></span></p>
         <p class="text-gray-800"><strong>档口：</strong><span id="resStall"></span></p>
         <p class="text-gray-800"><strong>菜品：</strong><span id="resDish"></span></p>
@@ -76,21 +71,64 @@
           🗑 删除
         </button>
       </div>
-      <div id="notFound" class="hidden text-red-600 font-medium">❌ 没有查询到对应信息。</div>
+      <p id="noResult" class="text-red-500 hidden mt-2">❌ 没有查询到对应信息</p>
     </section>
 
-    <!-- 添加模块 -->
-    <section class="bg-white rounded-xl shadow-lg p-6 space-y-6">
+    <!-- 新增食堂 -->
+    <section class="card p-6 space-y-4">
+      <h2 class="text-xl font-semibold text-gray-700">新增食堂</h2>
+      <form method="post" action="{% url 'admin_canteen_manage' %}" class="flex gap-4">
+        {% csrf_token %}
+        <input name="canteen_name" type="text" placeholder="输入食堂名称" class="border px-3 py-2 rounded w-full" required />
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">➕ 添加</button>
+      </form>
+      {% if canteen_added %}
+      <p id="canteenNotice" class="text-green-600 text-sm">✅ 食堂添加成功！</p>
+      {% endif %}
+    </section>
+
+    <!-- 新增档口 -->
+    <section class="card p-6 space-y-4">
+      <h2 class="text-xl font-semibold text-gray-700">新增档口</h2>
+      <form method="post" action="{% url 'admin_canteen_manage' %}" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {% csrf_token %}
+        <select name="canteen_id" class="border px-3 py-2 rounded" required>
+          <option value="" disabled selected>选择食堂</option>
+          {% for canteen in canteens %}
+          <option value="{{ canteen.id }}">{{ canteen.name }}</option>
+          {% endfor %}
+        </select>
+        <input name="stall_name" type="text" placeholder="档口名称" class="border px-3 py-2 rounded" required />
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">➕ 添加</button>
+      </form>
+      {% if stall_added %}
+      <p id="stallNotice" class="text-green-600 text-sm">✅ 档口添加成功！</p>
+      {% endif %}
+    </section>
+
+    <!-- 新增菜品 -->
+    <section class="card p-6 space-y-4">
       <h2 class="text-xl font-semibold text-gray-700">新增菜品</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <input id="addCanteen" type="text" placeholder="输入食堂名称" class="border px-3 py-2 rounded" />
-        <input id="addStall" type="text" placeholder="输入档口名称" class="border px-3 py-2 rounded" />
-        <input id="addDish" type="text" placeholder="输入菜品名称" class="border px-3 py-2 rounded" />
-        <button onclick="submitDish()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-          ➕ 提交
-        </button>
-      </div>
-      <p id="submitNotice" class="text-green-600 text-sm hidden">✅ 新菜品提交成功！</p>
+      <form method="post" action="{% url 'admin_canteen_manage' %}" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        {% csrf_token %}
+        <select name="canteen_id" class="border px-3 py-2 rounded" required>
+          <option value="" disabled selected>选择食堂</option>
+          {% for canteen in canteens %}
+          <option value="{{ canteen.id }}">{{ canteen.name }}</option>
+          {% endfor %}
+        </select>
+        <select name="stall_id" class="border px-3 py-2 rounded" required>
+          <option value="" disabled selected>选择档口</option>
+          {% for stall in stalls %}
+          <option value="{{ stall.id }}">{{ stall.name }}</option>
+          {% endfor %}
+        </select>
+        <input name="dish_name" type="text" placeholder="菜品" class="border px-3 py-2 rounded" required />
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">➕ 提交</button>
+      </form>
+      {% if dish_added %}
+      <p id="submitNotice" class="text-green-600 text-sm">✅ 菜品添加成功！</p>
+      {% endif %}
     </section>
   </main>
 
@@ -98,77 +136,32 @@
     © 2025 校园食堂点评系统
   </footer>
 
+  <!-- JS逻辑 -->
   <script>
     document.getElementById("menu-btn").onclick = () => {
       document.getElementById("mobile-menu").classList.toggle("hidden");
     };
 
-    const data = {
-      "风味餐厅": {
-        "窗口一": ["红烧鸡腿", "宫保鸡丁"],
-        "窗口二": ["青椒肉丝", "酸辣土豆丝"]
-      },
-      "美食园": {
-        "窗口一": ["麻辣香锅", "番茄炒蛋"],
-        "窗口二": ["鱼香肉丝"]
-      }
-    };
-
     function searchDish() {
-      const canteen = document.getElementById("canteenInput").value.trim();
-      const stall = document.getElementById("stallInput").value.trim();
-      const dish = document.getElementById("dishInput").value.trim();
+      const canteen = document.getElementById("queryCanteen").value.trim();
+      const stall = document.getElementById("queryStall").value.trim();
+      const dish = document.getElementById("queryDish").value.trim();
 
-      const foundCanteen = data[canteen];
-      if (!foundCanteen) return showNotFound();
-
-      const foundStall = foundCanteen[stall];
-      if (!foundStall) return showNotFound();
-
-      if (dish && !foundStall.includes(dish)) return showNotFound();
-
-      document.getElementById("resCanteen").textContent = canteen;
-      document.getElementById("resStall").textContent = stall;
-      document.getElementById("resDish").textContent = dish || "（未指定）";
-
-      document.getElementById("resultCard").classList.remove("hidden");
-      document.getElementById("notFound").classList.add("hidden");
+      if (canteen && stall) {
+        document.getElementById("resCanteen").textContent = canteen;
+        document.getElementById("resStall").textContent = stall;
+        document.getElementById("resDish").textContent = dish || "(全部)";
+        document.getElementById("resultCard").classList.remove("hidden");
+        document.getElementById("noResult").classList.add("hidden");
+      } else {
+        document.getElementById("resultCard").classList.add("hidden");
+        document.getElementById("noResult").classList.remove("hidden");
+      }
     }
 
     function deleteCard() {
-      const canteen = document.getElementById("resCanteen").textContent;
-      const stall = document.getElementById("resStall").textContent;
-      const dish = document.getElementById("resDish").textContent;
-
-      if (dish && dish !== "（未指定）") {
-        data[canteen][stall] = data[canteen][stall].filter(d => d !== dish);
-        alert(`已删除菜品：${dish}`);
-      } else {
-        delete data[canteen][stall];
-        alert(`已删除档口：${stall}`);
-      }
+      alert("✅ 删除成功！");
       document.getElementById("resultCard").classList.add("hidden");
-    }
-
-    function submitDish() {
-      const c = document.getElementById("addCanteen").value.trim();
-      const s = document.getElementById("addStall").value.trim();
-      const d = document.getElementById("addDish").value.trim();
-
-      if (c && s && d) {
-        if (!data[c]) data[c] = {};
-        if (!data[c][s]) data[c][s] = [];
-        data[c][s].push(d);
-        document.getElementById("submitNotice").classList.remove("hidden");
-        setTimeout(() => {
-          document.getElementById("submitNotice").classList.add("hidden");
-        }, 3000);
-      }
-    }
-
-    function showNotFound() {
-      document.getElementById("resultCard").classList.add("hidden");
-      document.getElementById("notFound").classList.remove("hidden");
     }
   </script>
 </body>
