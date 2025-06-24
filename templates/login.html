@@ -56,6 +56,15 @@
       font-weight: bold;
     }
 
+    .input-group select {
+      margin-right: auto;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: white;
+      font-size: 14px;
+    }
+
     .input-group input {
       width: 100%;
       padding: 10px;
@@ -114,6 +123,40 @@
     .bottom-space {
       height: 60px;
     }
+
+    .popup {
+      position: fixed;
+      z-index: 9999;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-box {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      max-width: 80%;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 16px;
+    }
+
+    .popup-box button {
+      margin-top: 16px;
+      padding: 8px 20px;
+      background-color: #89f0ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -124,63 +167,188 @@
     <a href="mine.html" class="back-button">← 返回“我的”</a>
 
     <!-- 登录表单 -->
-    <div class="form-box" id="loginForm">
+    <div class="form-box" id="loginForm" style="{% if not type %}display: none;{% endif %}" >
       <h2>用户登录</h2>
-      <div class="input-group">
-        <label for="login-username">用户名</label>
-        <input type="text" id="login-username" placeholder="请输入用户名" />
-      </div>
-      <div class="input-group">
-        <label for="login-password">密码</label>
-        <input type="password" id="login-password" placeholder="请输入密码" />
-      </div>
-      <button class="submit-btn">登录</button>
-      <div class="switch">没有账号？<a onclick="switchToRegister()">注册</a></div>
+      <form id="myForm"  method="post" action="login.html">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="login-username">用户名</label>
+          <input type="text" id="login-username" required maxlength="20" placeholder="请输入用户名" name="user" />
+        </div>
+        <div class="input-group">
+          <label for="login-password">密码</label>
+          <input type="password" id="login-password" required maxlength="20" placeholder="请输入密码" name="pwd"/>
+        </div>
+        <button class="submit-btn" type="submit">登录</button>
+        </form>
+        <span style="color: red;">{{ error }}</span>
+        <div class="switch">没有账号？<a onclick="switchToRegister()">注册</a></div>
     </div>
 
     <!-- 注册表单 -->
-    <div class="form-box" id="registerForm" style="display: none;">
+    <div class="form-box" id="registerForm" style="{% if type %}display: none;{% endif %}">
       <h2>用户注册</h2>
-      <div class="input-group">
-        <label for="register-email">邮箱</label>
-        <input type="email" id="register-email" placeholder="请输入邮箱" />
-      </div>
-      <div class="input-group">
-        <label for="register-password">密码</label>
-        <input type="password" id="register-password" placeholder="请输入密码" />
-      </div>
-      <div class="input-group">
-        <label for="register-confirm">确认密码</label>
-        <input type="password" id="register-confirm" placeholder="请再次输入密码" />
-      </div>
-      <div class="input-group">
-        <label for="register-code">验证码</label>
-        <div class="row">
-          <input type="text" id="register-code" placeholder="请输入验证码" />
-          <button type="button" onclick="sendCode()">发送验证码</button>
+      <form id="myForm"  method="post" action="login.html">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="register-email">邮箱</label>
+          <input type="email" id="register-email" required placeholder="请输入邮箱" name = "reg_user"/>
         </div>
-      </div>
-      <button class="submit-btn">注册</button>
+        <div class="input-group">
+          <label for="register-password">密码</label>
+          <input type="password" id="register-password" required minlength="8" maxlength="20" placeholder="请输入密码" name = "reg_pwd"/>
+        </div>
+        <div class="input-group">
+          <label for="register-confirm">确认密码</label>
+          <input type="password" id="register-confirm" required minlength="8" maxlength="20" placeholder="请再次输入密码" name = "reg_pwd_again"/>
+        </div>
+        <div class="input-group">
+            <label for="register-confirm">选择用户类型</label>
+            <br>
+            <select name="reg_type">
+                <option value="1" selected>普通用户</option>
+                <option value="2">商家用户</option>
+            </select>
+        </div>
+        <div class="input-group">
+          <label for="register-code">验证码</label>
+          <div class="row">
+            <input type="text" id="register-code" required placeholder="请输入验证码" minlength="6" maxlength="6" name = "reg_code"/>
+            <button type="button" id="codeBtn" onclick="sendCode()">发送验证码</button>
+          </div>
+        </div>
+        <button class="submit-btn" type="submit" >注册</button>
+      </form>
+      <span style="color: red;">{{ error }}</span>
       <div class="switch">已有账号？<a onclick="switchToLogin()">登录</a></div>
     </div>
   </div>
 
   <div class="bottom-space"></div>
 
+  <div id="popup" class="popup" style="display: none;">
+    <div class="popup-box">
+        <div id="popup-text">提示内容</div>
+        <button onclick="closePopup()">确定</button>
+    </div>
+  </div>
+
   <script>
-    function switchToRegister() {
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('registerForm').style.display = 'block';
-    }
+      const CODE_KEY = "verify_cooldown_until";
 
-    function switchToLogin() {
-      document.getElementById('registerForm').style.display = 'none';
-      document.getElementById('loginForm').style.display = 'block';
-    }
+      function switchToRegister() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'block';
+      }
 
-    function sendCode() {
-      alert("验证码已发送到邮箱（模拟）");
-    }
+      function switchToLogin() {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+      }
+
+      function startCooldown(duration = 60) {
+        const btn = document.getElementById('codeBtn');
+        const now = Date.now();
+        const end = now + duration * 1000;
+        localStorage.setItem(CODE_KEY, end);
+
+        btn.disabled = true;
+        btn.style.backgroundColor = '#ccc';
+
+        const timer = setInterval(() => {
+          const remaining = Math.floor((end - Date.now()) / 1000);
+          if (remaining <= 0) {
+            clearInterval(timer);
+            btn.disabled = false;
+            btn.style.backgroundColor = '#facc15';
+            btn.textContent = '发送验证码';
+            localStorage.removeItem(CODE_KEY);
+          } else {
+            btn.textContent = `重新发送（${remaining}s）`;
+          }
+        }, 1000);
+      }
+
+        function sendCode() {
+            const email = document.getElementById("register-email").value;
+            const btn = document.getElementById("codeBtn");
+
+            if (!email) {
+              showPopup("请先填写邮箱");
+              return;
+            }
+
+            btn.disabled = true;
+            btn.style.backgroundColor = '#ccc';
+            btn.textContent = "发送中...";
+
+            fetch("/send_code/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": getCookie("csrftoken")
+              },
+              body: new URLSearchParams({ email })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                showPopup("验证码已发送，请检查邮箱");
+                startCooldown(60); // 倒计时函数保留
+              } else {
+                showPopup(data.msg || "发送失败");
+                resetSendButton();
+              }
+            })
+            .catch(() => {
+              showPopup("发送请求失败");
+              resetSendButton();
+            });
+
+            function resetSendButton() {
+              btn.disabled = false;
+              btn.style.backgroundColor = '#facc15';
+              btn.textContent = "发送验证码";
+            }
+        }
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      // 页面加载时检查是否在冷却中
+      window.addEventListener("load", () => {
+        const btn = document.getElementById('codeBtn');
+        const end = parseInt(localStorage.getItem(CODE_KEY));
+        if (!isNaN(end)) {
+          const remaining = Math.floor((end - Date.now()) / 1000);
+          if (remaining > 0) {
+            startCooldown(remaining);
+          } else {
+            localStorage.removeItem(CODE_KEY);
+          }
+        }
+      });
+
+      function showPopup(message) {
+        document.getElementById('popup-text').textContent = message;
+        document.getElementById('popup').style.display = 'flex';
+      }
+
+      function closePopup() {
+        document.getElementById('popup').style.display = 'none';
+      }
   </script>
 </body>
 </html>
