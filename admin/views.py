@@ -6,6 +6,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 # Create your views here.
+
+
 def admin(request):
     # 用户和商家数量
     # 用户与商家数量
@@ -32,6 +34,7 @@ def admin(request):
     })
     #return render(request, 'admin.html')
 
+
 def admin_register(request):
     """user_requests = User.objects.filter(status='pending', is_merchant=False)
     merchant_requests = User.objects.filter(status='pending', is_merchant=True)
@@ -41,8 +44,6 @@ def admin_register(request):
     })"""
     return render(request, 'admin_register.html')
 
-from django.shortcuts import render, redirect
-from .models import CanteenInfo, StallInfo, DishInfo
 
 def admin_canteen_manage(request):
     query_result = None
@@ -204,6 +205,7 @@ def admin_canteen_manage(request):
 
 def admin_center(request):
     return render(request, 'admin_center.html')
+
 
 def admin_message_center(request):
     return render(request, 'admin_message_center.html')

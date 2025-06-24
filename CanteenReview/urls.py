@@ -28,25 +28,18 @@ from mine.views import send_code
 from admin import views
 
 
-
 urlpatterns = [
     path('index.html', index),
     path('mine.html', mine),
     path('add.html', addreview),
     path('search.html', search),
     path('login.html', login),
-    #path('admin.html', admin),
     path('manager.html', manager),
     path('my-comments.html', my_comments),
     path('feedback.html', feedback),
     path('ranking.html', rank),
     path('send_code/', send_code, name='send_code'),
     path('', index),
-    #path('admin.html', admin),
-    #path('admin_register.html', admin_register),
-    #path('admin_canteen_manage.html', admin_canteen_manage),
-    #path('admin_center.html', admin_center),
-    #path('admin_message_center.html', admin_message_center),
     path('admin/', views.admin, name='admin'),
     path('center/', views.admin_center, name='admin_center'),
     path('messages/', views.admin_message_center, name='admin_message_center'),

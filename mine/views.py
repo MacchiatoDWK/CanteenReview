@@ -1,6 +1,6 @@
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from mine import models
 import random
 # Create your views here.
@@ -13,6 +13,8 @@ def mine(request):
         response = render(request, 'mine.html')
         response.delete_cookie('username', path='/')
         response.delete_cookie('usertype', path='/')
+        response.delete_cookie('userid', path='/')
+        response.delete_cookie('StallID', path='/')
         return response
 
 
@@ -30,6 +32,7 @@ def login(request):
                     response.set_cookie('userid', str(reg_temp.id), path='/', max_age=60 * 60 * 24 * 3)
                     response.set_cookie('username', user, path='/', max_age=60*60*24*3)
                     response.set_cookie('usertype', str(reg_temp.UserType), path='/', max_age=60*60*24*3)
+                    response.set_cookie('StallID', str(reg_temp.StallID), path='/', max_age=60 * 60 * 24 * 3)
                     return response
                 else:
                     return render(request, 'login.html', {"error": "用户名或密码不正确", "type": True})
@@ -85,11 +88,19 @@ def send_code(request):
     return JsonResponse({'success': False, 'msg': '仅支持POST请求'})
 
 
-def admin(request):
-    return render(request, 'admin.html')
-
-
 def manager(request):
+    stallid = request.COOKIES.get('StallID')
+    userid = request.COOKIES.get('userid')
+    if stallid == 'None':
+        manager_temp = models.AuthMessage.objects.filter(UserID=userid)
+        if manager_temp:
+            manager_temp = models.AuthMessage.objects.filter(UserID=userid, Validity=1)
+            if manager_temp:
+                return HttpResponse("申请尚未审核")
+            else:
+                return HttpResponse("申请未审核通过，可重新申请")
+        else:
+            return HttpResponse("请进行档口认证申请")
     return render(request, 'manager.html')
 
 

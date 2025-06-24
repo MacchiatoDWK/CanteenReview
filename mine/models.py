@@ -17,3 +17,5 @@ class AuthMessage(models.Model):
     StallID = models.IntegerField(verbose_name="申请认证档口ID")
     Describe = models.TextField(verbose_name="申请描述", max_length=110)
     Validity = models.IntegerField(verbose_name="是否有效")
+
+
