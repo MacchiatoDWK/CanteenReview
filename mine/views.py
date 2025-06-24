@@ -27,6 +27,7 @@ def login(request):
             if reg_temp is not None:
                 if reg_temp.Password == pwd:
                     response = redirect('mine.html')
+                    response.set_cookie('userid', str(reg_temp.id), path='/', max_age=60 * 60 * 24 * 3)
                     response.set_cookie('username', user, path='/', max_age=60*60*24*3)
                     response.set_cookie('usertype', str(reg_temp.UserType), path='/', max_age=60*60*24*3)
                     return response
