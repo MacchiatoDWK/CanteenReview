@@ -24,6 +24,7 @@ from mine.views import manager
 from mine.views import my_comments
 from mine.views import feedback
 from mine.views import rank
+from mine.views import send_code
 from admin import views
 
 
@@ -39,6 +40,7 @@ urlpatterns = [
     path('my-comments.html', my_comments),
     path('feedback.html', feedback),
     path('ranking.html', rank),
+    path('send_code/', send_code, name='send_code'),
     path('', index),
     #path('admin.html', admin),
     #path('admin_register.html', admin_register),

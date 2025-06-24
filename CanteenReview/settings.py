@@ -78,19 +78,12 @@ WSGI_APPLICATION = 'CanteenReview.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db',
+        'NAME': 'canteenreview',
         'USER': 'root',
-        'PASSWORD': 'cbfkbg666',
+        'PASSWORD': '20040615',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -134,3 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '2597019369@qq.com'
+EMAIL_HOST_PASSWORD = 'vufkuwztdehjeacc'
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
