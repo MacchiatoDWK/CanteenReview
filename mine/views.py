@@ -91,7 +91,10 @@ def send_code(request):
 
 def manager(request):
     userid = request.COOKIES.get('userid')
-    stallid = MM.UserInfo.objects.filter(id=userid).first().StallID
+    if userid is None:
+        return render(request, 'index.html')
+    else:
+        stallid = MM.UserInfo.objects.filter(id=userid).first().StallID
     if stallid is None:
         manager_temp = MM.AuthMessage.objects.filter(UserID=userid)
         if manager_temp:
@@ -181,21 +184,28 @@ def my_comments(request):
 
 def feedback(request):
     userid = request.COOKIES.get('userid')
-
-    feedback_temp = MM.FeedbackMessage.objects.filter(UserID=userid)
-    if feedback_temp:
-        feedback_temp = MM.FeedbackMessage.objects.filter(UserID=userid, Validity=1)
-        if feedback_temp.count() >= 3:
-            return render(request, 'feedback.html', {
-                'success': True,
-                'msg': '你的反馈过多，请等待反馈核实',
-                'back': True
-            })
+    usertype = request.COOKIES.get('usertype')
+    username = request.COOKIES.get('username')
+    if userid is not None and usertype is not None and username is not None:
+        feedback_temp = MM.FeedbackMessage.objects.filter(UserID=userid)
+        if feedback_temp:
+            feedback_temp = MM.FeedbackMessage.objects.filter(UserID=userid, Validity=1)
+            if feedback_temp.count() >= 3:
+                return render(request, 'feedback.html', {
+                    'success': True,
+                    'msg': '你的反馈过多，请等待反馈核实',
+                    'back': True
+                })
+            else:
+                return render(request, 'feedback.html')
         else:
             return render(request, 'feedback.html')
     else:
-        return render(request, 'feedback.html')
-
+        return render(request, 'feedback.html', {
+            'success': True,
+            'msg': '请先登录',
+            'back': True
+        })
 
 def rank(request):
     return render(request, 'ranking.html')

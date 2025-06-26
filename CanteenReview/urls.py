@@ -17,7 +17,7 @@ from django.urls import path
 from django.shortcuts import HttpResponse
 from mainPage.views import index
 from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, submit_feedback
-from addReview.views import addreview
+from addReview.views import addreview, submit_comment
 from search.views import search
 from mine.views import login
 from mine.views import manager
@@ -26,7 +26,8 @@ from mine.views import feedback
 from mine.views import rank
 from mine.views import send_code
 from admin import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('index.html', index),
@@ -50,4 +51,6 @@ urlpatterns = [
     path('get_dishes/', get_dishes, name='get_dishes'),
     path('submit_auth/', submit_auth, name='submit_auth'),
     path('submit_feedback/', submit_feedback, name='submit_feedback'),
-]
+    path('submit_comment/', submit_comment, name='submit_comment'),
+
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

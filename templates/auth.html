@@ -175,7 +175,7 @@
     <!-- 返回按钮 -->
     <a href="mine.html" class="back-button">← 返回“我的”</a>
 
-    <!-- 注册表单 -->
+    <!-- 认证表单 -->
     <div class="form-box" id="registerForm">
       <h2>请先进行档口认证</h2>
       <form id="myForm"  method="post" action="/submit_auth/">
@@ -256,14 +256,6 @@
           });
       });
 
-      window.addEventListener("DOMContentLoaded", function () {
-
-      });
-
-      function closePopupAndRedirect() {
-        window.location.href = '/index.html';
-      }
-
 
       function showPopup(message) {
         document.getElementById('popup-text').textContent = message;
@@ -276,8 +268,8 @@
         if (back) {
             window.location.href = '/mine.html';
         }
-
       }
+      
   </script>
 </body>
 </html>

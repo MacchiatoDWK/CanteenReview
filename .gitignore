@@ -9,3 +9,5 @@
 
 /admin/migrations
 /mine/migrations
+/addReview/migrations
+/media/comments/
