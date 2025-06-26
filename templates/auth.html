@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>反馈</title>
+  <title>认证</title>
   <style>
     body {
       margin: 0;
@@ -175,26 +175,23 @@
     <!-- 返回按钮 -->
     <a href="mine.html" class="back-button">← 返回“我的”</a>
 
-    <!-- 注册表单 -->
+    <!-- 认证表单 -->
     <div class="form-box" id="registerForm">
-      <h2>请进行反馈</h2>
-      <form id="myForm"  method="post" action="/submit_feedback/">
+      <h2>请先进行档口认证</h2>
+      <form id="myForm"  method="post" action="/submit_auth/">
         {% csrf_token %}
         <div class="input-group">
-            <label for="register-confirm">选择反馈食堂/档口/菜品</label>
+            <label for="register-confirm">选择食堂/档口</label>
             <br>
-            <select id="canteen-select" name="canteen">
+            <select id="canteen-select" name="canteen" required>
                 <option value="">加载中...</option>
             </select>
-            <select id="stall-select" name="stall" disabled>
+            <select id="stall-select" name="stall" required disabled>
                 <option value="">请先选择食堂</option>
-            </select>
-            <select id="dish-select" name="dish" disabled>
-                <option value="">请先选择档口</option>
             </select>
         </div>
         <div class="section">
-            <textarea id="describe-text" placeholder="请输入反馈描述" required name="describe" maxlength="100"></textarea>
+            <textarea id="describe-text" placeholder="请输入申请描述" required name="describe" maxlength="100"></textarea>
         </div>
         <button class="submit-btn" type="submit" >提交</button>
       </form>
@@ -236,15 +233,12 @@
       document.getElementById("canteen-select").addEventListener("change", function () {
         const canteenId = this.value;
         const stallSelect = document.getElementById("stall-select");
-        const dishSelect = document.getElementById("dish-select");
 
         if (!canteenId) {
           stallSelect.innerHTML = '<option>请先选择食堂</option>';
-          dishSelect.innerHTML = '<option>请先选择档口</option>';
           stallSelect.disabled = true;
-          dishSelect.disabled = true;
           return;
-      }
+        }
 
         stallSelect.disabled = false;
         stallSelect.innerHTML = '<option>加载中...</option>';
@@ -262,43 +256,6 @@
           });
       });
 
-      document.getElementById("stall-select").addEventListener("change", function () {
-        const stallId = this.value;
-        const dishSelect = document.getElementById("dish-select");
-
-        if (!stallId) {
-          dishSelect.innerHTML = '<option>请先选择档口</option>';
-          dishSelect.disabled = true;
-          return;
-        }
-
-        dishSelect.disabled = false;
-        dishSelect.innerHTML = '<option>加载中...</option>';
-
-        fetch(`/get_dishes/?stall_id=${stallId}`)
-          .then(res => res.json())
-          .then(data => {
-            dishSelect.innerHTML = '<option value="">请选择菜品</option>';
-            data.dishes.forEach(s => {
-              const opt = document.createElement("option");
-              opt.value = s.id;
-              opt.textContent = s.DishName;
-              dishSelect.appendChild(opt);
-            });
-          });
-      });
-
-
-
-
-      window.addEventListener("DOMContentLoaded", function () {
-
-      });
-
-      function closePopupAndRedirect() {
-        window.location.href = '/index.html';
-      }
-
 
       function showPopup(message) {
         document.getElementById('popup-text').textContent = message;
@@ -311,8 +268,8 @@
         if (back) {
             window.location.href = '/mine.html';
         }
-
       }
+      
   </script>
 </body>
 </html>

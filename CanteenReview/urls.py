@@ -16,18 +16,18 @@ Including another URLconf
 from django.urls import path
 from django.shortcuts import HttpResponse
 from mainPage.views import index
-from mine.views import mine
-from addReview.views import addreview
+from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, submit_feedback
+from addReview.views import addreview, submit_comment
 from search.views import search
 from mine.views import login
 from mine.views import manager
 from mine.views import my_comments
 from mine.views import feedback
 from mine.views import rank
-from admin import views
-
 from mine.views import send_code
-
+from admin import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('index.html', index),
@@ -52,6 +52,11 @@ urlpatterns = [
     path('messages/', views.admin_message_center, name='admin_message_center'),
     path('register/', views.admin_register, name='admin_register'),
     path('canteen/', views.admin_canteen_manage, name='admin_canteen_manage'),
-    # path('admin_register/approve/<int:auth_id>/', views.approve_auth, name='approve_auth'),#用于处理商家注册消息
-    # path('admin_register/reject/<int:auth_id>/', views.reject_auth, name='reject_auth'),#用于处理商家注册消息
-]
+    path('get_canteens/', get_canteens, name='get_canteens'),
+    path('get_stalls/', get_stalls, name='get_stalls'),
+    path('get_dishes/', get_dishes, name='get_dishes'),
+    path('submit_auth/', submit_auth, name='submit_auth'),
+    path('submit_feedback/', submit_feedback, name='submit_feedback'),
+    path('submit_comment/', submit_comment, name='submit_comment'),
+
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

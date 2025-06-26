@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 # Create your views here.
+
+
 def admin(request):
     # 用户和商家数量
     user_count = UserInfo.objects.filter(UserType=1).count()
@@ -31,6 +33,7 @@ def admin(request):
         'merchant_count': merchant_count,
         'canteen_list': canteen_list
     })
+
 
 def admin_register(request):
     # 处理“同意”或“驳回”按钮
@@ -283,6 +286,7 @@ def admin_center(request):
         'pwd_changed': pwd_changed,
         'pwd_error': pwd_error,
     })
+
 
 def admin_message_center(request):
     return render(request, 'admin_message_center.html')
