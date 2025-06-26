@@ -7,3 +7,5 @@
 /dataSources/
 /dataSources.local.xml
 
+/admin/migrations
+/mine/migrations

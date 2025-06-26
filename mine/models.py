@@ -19,3 +19,11 @@ class AuthMessage(models.Model):
     Validity = models.IntegerField(verbose_name="是否有效")
 
 
+class FeedbackMessage(models.Model):
+    UserID = models.IntegerField(verbose_name="用户ID")
+    Username = models.CharField(verbose_name="用户名", max_length=20)
+    CanteenID = models.IntegerField(verbose_name="反馈食堂ID", null=True, blank=True)
+    StallID = models.IntegerField(verbose_name="反馈档口ID", null=True, blank=True)
+    DishID = models.IntegerField(verbose_name="反馈菜品ID", null=True, blank=True)
+    Describe = models.TextField(verbose_name="申请描述", max_length=110)
+    Validity = models.IntegerField(verbose_name="是否有效")

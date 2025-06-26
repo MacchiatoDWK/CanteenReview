@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path
 from django.shortcuts import HttpResponse
 from mainPage.views import index
-from mine.views import mine
+from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, submit_feedback
 from addReview.views import addreview
 from search.views import search
 from mine.views import login
@@ -45,4 +45,9 @@ urlpatterns = [
     path('messages/', views.admin_message_center, name='admin_message_center'),
     path('register/', views.admin_register, name='admin_register'),
     path('canteen/', views.admin_canteen_manage, name='admin_canteen_manage'),
+    path('get_canteens/', get_canteens, name='get_canteens'),
+    path('get_stalls/', get_stalls, name='get_stalls'),
+    path('get_dishes/', get_dishes, name='get_dishes'),
+    path('submit_auth/', submit_auth, name='submit_auth'),
+    path('submit_feedback/', submit_feedback, name='submit_feedback'),
 ]
