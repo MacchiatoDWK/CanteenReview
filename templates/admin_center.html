@@ -17,7 +17,7 @@
 </head>
 <body class="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-green-100">
 
-  <!-- 导航栏（保持一致） -->
+  <!-- 导航栏 -->
   <nav class="bg-white/80 backdrop-blur shadow-md sticky top-0 left-0 right-0 z-50 rounded-b-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
@@ -61,18 +61,73 @@
   <main class="flex-grow px-6 py-10 max-w-7xl mx-auto">
     <h1 class="text-3xl font-bold text-gray-800 mb-10">管理员账号管理</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <!-- 管理员列表 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-16">
       {% for admin in admins %}
-      <a href="{% url 'edit_admin' %}?id={{ admin.id }}" class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
-        <img src="{{ admin.avatar_url }}" class="w-20 h-20 rounded-full object-cover mb-4" alt="管理员头像">
-        <h3 class="text-xl font-semibold text-gray-700">{{ admin.name }}</h3>
-        <p class="text-sm text-gray-500">管理员</p>
+      <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center text-center card-hover">
+        <h3 class="text-xl font-semibold text-gray-700">{{ admin.Username }}</h3>
+        <p class="text-sm text-gray-500">密码：{{ admin.Password }}</p>
         <p class="text-sm text-gray-400 mt-1">ID: {{ admin.id }}</p>
-      </a>
+      </div>
       {% empty %}
       <p class="text-gray-500 col-span-full text-center">暂无管理员账号数据</p>
       {% endfor %}
     </div>
+
+    <!-- 修改密码模块 -->
+    <section class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 space-y-6">
+      <h2 class="text-2xl font-semibold text-gray-800 text-center">修改管理员密码</h2>
+
+      {% if pwd_changed %}
+      <p class="text-green-600 text-center">✅ 密码修改成功！</p>
+      {% endif %}
+      {% if pwd_error %}
+      <p class="text-red-600 text-center">❌ {{ pwd_error }}</p>
+      {% endif %}
+
+      <form method="post" action="{% url 'admin_center' %}" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="change_pwd" value="1" />
+
+        <!-- 选择要修改的管理员 -->
+        <label class="block">
+          <span class="text-gray-700">选择管理员</span>
+          <select name="admin_id" required class="mt-1 block w-full border rounded px-3 py-2">
+            <option value="" disabled selected>请选择管理员</option>
+            {% for admin in admins %}
+            <option value="{{ admin.id }}">{{ admin.Username }} (ID: {{ admin.id }})</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <!-- 旧密码 -->
+        <label class="block">
+          <span class="text-gray-700">旧 密 码</span>
+          <input name="old_password" type="password" required
+                 class="mt-1 block w-full border rounded px-3 py-2" />
+        </label>
+
+        <!-- 新密码 -->
+        <label class="block">
+          <span class="text-gray-700">新 密 码</span>
+          <input name="new_password1" type="password" required
+                 class="mt-1 block w-full border rounded px-3 py-2" />
+        </label>
+
+        <!-- 确认新密码 -->
+        <label class="block">
+          <span class="text-gray-700">确认新密码</span>
+          <input name="new_password2" type="password" required
+                 class="mt-1 block w-full border rounded px-3 py-2" />
+        </label>
+
+        <button type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded">
+          提交修改
+        </button>
+      </form>
+    </section>
+
   </main>
 
   <!-- 底部 -->

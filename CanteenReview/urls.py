@@ -52,4 +52,6 @@ urlpatterns = [
     path('messages/', views.admin_message_center, name='admin_message_center'),
     path('register/', views.admin_register, name='admin_register'),
     path('canteen/', views.admin_canteen_manage, name='admin_canteen_manage'),
+    # path('admin_register/approve/<int:auth_id>/', views.approve_auth, name='approve_auth'),#用于处理商家注册消息
+    # path('admin_register/reject/<int:auth_id>/', views.reject_auth, name='reject_auth'),#用于处理商家注册消息
 ]

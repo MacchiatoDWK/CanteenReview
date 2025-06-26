@@ -1,16 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count
-from .models import CanteenInfo, StallInfo, DishInfo
+from admin.models import CanteenInfo, StallInfo, DishInfo
+from mine.models import UserInfo, AuthMessage
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def admin(request):
     # 用户和商家数量
-    # 用户与商家数量
-    # user_count = User.objects.filter(is_merchant=False).count()
-    # merchant_count = User.objects.filter(is_merchant=True).count()
+    user_count = UserInfo.objects.filter(UserType=1).count()
+    merchant_count = UserInfo.objects.filter(UserType=2).count()
 
     # 获取所有食堂，统计每个食堂对应的档口数和菜品数
     canteens = CanteenInfo.objects.all()
@@ -26,23 +27,55 @@ def admin(request):
         })
 
     return render(request, 'admin.html', {
-        #'user_count': user_count,
-        #'merchant_count': merchant_count,
+        'user_count': user_count,
+        'merchant_count': merchant_count,
         'canteen_list': canteen_list
     })
-    #return render(request, 'admin.html')
 
 def admin_register(request):
-    """user_requests = User.objects.filter(status='pending', is_merchant=False)
-    merchant_requests = User.objects.filter(status='pending', is_merchant=True)
-    return render(request, 'admin_register.html', {
-        'user_requests': user_requests,
-        'merchant_requests': merchant_requests
-    })"""
-    return render(request, 'admin_register.html')
+    # 处理“同意”或“驳回”按钮
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        auth_id = request.POST.get('auth_id')
+        auth = get_object_or_404(AuthMessage, id=auth_id, Validity=1)
 
-from django.shortcuts import render, redirect
-from .models import CanteenInfo, StallInfo, DishInfo
+        if action == 'approve':
+            try:
+                user = UserInfo.objects.get(id=auth.UserID)
+                user.StallID = auth.StallID
+                user.save()
+                auth.Validity = 0
+                auth.save()
+            except UserInfo.DoesNotExist:
+                pass
+
+        elif action == 'reject':
+            auth.Validity = 0
+            auth.save()
+
+        return redirect(reverse('admin_register'))
+
+    # GET 请求：展示注册认证请求
+    auth_requests = AuthMessage.objects.filter(Validity=1)
+    auth_with_stall_name = []
+    for auth in auth_requests:
+        try:
+            stall = StallInfo.objects.get(id=auth.StallID)
+            stall_name = stall.StallName
+        except StallInfo.DoesNotExist:
+            stall_name = "（档口不存在）"
+        auth_with_stall_name.append({
+            'id': auth.id,
+            'Username': auth.Username,
+            'StallID': auth.StallID,
+            'Describe': auth.Describe,
+            'StallName': stall_name,
+        })
+
+    return render(request, 'admin_register.html', {
+        'auth_requests': auth_with_stall_name,
+    })
+
 
 def admin_canteen_manage(request):
     query_result = None
@@ -60,6 +93,7 @@ def admin_canteen_manage(request):
             dish_description = request.POST.get('dish_description', '').strip()
 
             if not dish_name or not canteen_name or not stall_name:
+                print("填入为空")
                 return redirect(reverse('admin_canteen_manage') + '?dish_add_failed=1')
 
             try:
@@ -67,10 +101,12 @@ def admin_canteen_manage(request):
                 stall = StallInfo.objects.filter(StallName=stall_name, Canteen=canteen).first()
 
                 if not canteen or not stall:
+                    print("没有食堂或档口")
                     return redirect(reverse('admin_canteen_manage') + '?dish_add_failed=1')
 
                 # 检查菜品是否重复
                 if DishInfo.objects.filter(DishName=dish_name, Stall=stall).exists():
+                    print("菜品重复")
                     return redirect(reverse('admin_canteen_manage') + '?dish_add_failed=1')
 
                 DishInfo.objects.create(DishName=dish_name, Stall=stall, Description=dish_description)
@@ -190,11 +226,13 @@ def admin_canteen_manage(request):
 
     # 页面加载数据
     canteens = CanteenInfo.objects.all()
-    stalls = StallInfo.objects.all()
+    stalls = StallInfo.objects.select_related('Canteen').all()
+    dishes = DishInfo.objects.select_related('Stall').all()
 
     return render(request, 'admin_canteen_manage.html', {
         'canteens': canteens,
         'stalls': stalls,
+        'dishes': dishes,
         'query_result': query_result,
         'no_result': no_result,
         'has_searched': has_searched,
@@ -203,7 +241,48 @@ def admin_canteen_manage(request):
 
 
 def admin_center(request):
-    return render(request, 'admin_center.html')
+    # ******************
+    # 1. 处理修改密码请求
+    # ******************
+    pwd_changed = False
+    pwd_error = ''
+    if request.method == 'POST' and 'change_pwd' in request.POST:
+        admin_id = request.POST.get('admin_id')
+        old_pwd = request.POST.get('old_password', '').strip()
+        new_pwd1 = request.POST.get('new_password1', '').strip()
+        new_pwd2 = request.POST.get('new_password2', '').strip()
+
+        admin = get_object_or_404(UserInfo, id=admin_id, UserType=3)
+        # 校验旧密码是否一致
+        if admin.Password != old_pwd:
+            pwd_error = '旧密码不正确'
+        elif new_pwd1 == old_pwd :
+            pwd_error = '新密码输入与旧密码一致'
+        # 校验两次新密码
+        elif not new_pwd1 or new_pwd1 != new_pwd2:
+            pwd_error = '两次新密码输入不一致或为空'
+        else:
+            # 全部合法，更新密码
+            admin.Password = new_pwd1
+            admin.save()
+            pwd_changed = True
+            # 重定向避免 F5 重复提交
+            return redirect(reverse('admin_center') + '?pwd_changed=1')
+
+    # 从 GET 参数读取重定向后的提示
+    if request.GET.get('pwd_changed') == '1':
+        pwd_changed = True
+
+    # ******************
+    # 2. 获取所有管理员账号列表
+    # ******************
+    admins = UserInfo.objects.filter(UserType=3)
+
+    return render(request, 'admin_center.html', {
+        'admins': admins,
+        'pwd_changed': pwd_changed,
+        'pwd_error': pwd_error,
+    })
 
 def admin_message_center(request):
     return render(request, 'admin_message_center.html')

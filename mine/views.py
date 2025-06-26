@@ -84,8 +84,8 @@ def send_code(request):
     return JsonResponse({'success': False, 'msg': '仅支持POST请求'})
 
 
-def admin(request):
-    return render(request, 'admin.html')
+# def admin(request):
+#     return render(request, 'admin.html')
 
 
 def manager(request):
