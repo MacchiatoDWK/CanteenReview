@@ -1,8 +1,10 @@
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
 from mine import models as MM
 from admin import models as AM
+from addReview import models as AR
 import random
 
 
@@ -179,8 +181,103 @@ def submit_feedback(request):
 
 
 def my_comments(request):
-    return render(request, 'my-comments.html')
+    userid = request.COOKIES.get('userid')
+    usertype = request.COOKIES.get('usertype')
+    username = request.COOKIES.get('username')
+    if userid is not None and usertype is not None and username is not None:
+        return render(request, 'my-comments.html')
+    else:
+        return render(request, 'my-comments.html', {
+            'success': True,
+            'msg': '请先登录',
+            'back': True
+        })
 
+def get_my_comments(request):
+    page = int(request.GET.get('page', 1))
+    page_size = 10
+
+    userid = request.COOKIES.get('userid')
+
+    reviews = AR.Review.objects.filter(UserID=userid).order_by('-Timestamp')
+    paginator = Paginator(reviews, page_size)
+    page_obj = paginator.get_page(page)
+
+    comment_data = []
+
+    for review in page_obj:
+        # 获取被评论对象名称
+        if review.ObjType == 1:
+            try:
+                canteenName = AM.CanteenInfo.objects.get(id=review.ObjID).CanteenName
+                stallName = ""
+                dishName = ""
+            except:
+                canteenName = "已删除食堂"
+                stallName = ""
+                dishName = ""
+        elif review.ObjType == 2:
+            try:
+                canteenid = AM.StallInfo.objects.get(id=review.ObjID).Canteen_id
+                canteenName = AM.CanteenInfo.objects.get(id=canteenid).CanteenName
+                stallName = AM.StallInfo.objects.get(id=review.ObjID).StallName
+                dishName = ""
+            except:
+                canteenName = "已删除食堂"
+                stallName = "已删除档口"
+                dishName = ""
+        elif review.ObjType == 3:
+            try:
+                stallid = AM.DishInfo.objects.get(id=review.ObjID).Stall_id
+                stallName = AM.StallInfo.objects.get(id=stallid).StallName
+                canteenid = AM.StallInfo.objects.get(id=stallid).Canteen_id
+                canteenName = AM.CanteenInfo.objects.get(id=canteenid).CanteenName
+                dishName = AM.DishInfo.objects.get(id=review.ObjID).DishName
+            except:
+                canteenName = "已删除食堂"
+                stallName = "已删除档口"
+                dishName = "已删除菜品"
+        else:
+            canteenName = ""
+            stallName = ""
+            dishName = ""
+
+        # 获取图片
+        images = AR.Image.objects.filter(ReviewID=review.id)
+        image_urls = [img.ImageURL for img in images]
+
+        # 构造返回数据
+        comment_data.append({
+            'username': review.Username,
+            'rating': review.Rating,
+            'text': review.Describe,
+            'timestamp': review.Timestamp.strftime("%Y-%m-%d %H:%M"),
+            'canteenName': canteenName,
+            'stallName': stallName,
+            'dishName': dishName,
+            'images': image_urls,
+            'reviewId':review.id,
+        })
+
+    return JsonResponse({
+        'comments': comment_data,
+        'has_next': page_obj.has_next()
+    })
+
+def delete_review(request):
+    if request.method == 'POST':
+        review_id = int(request.GET.get('id', 1))
+        userid = int(request.COOKIES.get('userid'))
+        try:
+            review = AR.Review.objects.get(id=review_id)
+            if userid != review.UserID:
+                return JsonResponse({'success': False, 'msg': '无权限删除'})
+            AR.Image.objects.filter(ReviewID=review_id).delete()
+            AR.Review.objects.get(id=review_id).delete()
+            return JsonResponse({'success': True})
+        except AR.Review.DoesNotExist:
+            return JsonResponse({'success': False, 'msg': '评论不存在'})
+    return JsonResponse({'success': False, 'msg': '仅支持 POST'})
 
 def feedback(request):
     userid = request.COOKIES.get('userid')

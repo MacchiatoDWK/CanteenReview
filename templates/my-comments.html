@@ -1,10 +1,305 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>我的评论</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>我的评论</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Helvetica", sans-serif;
+      background-color: #fff89a;
+    }
+
+    .container {
+      padding: 16px;
+      padding-bottom: 80px; /* 为底部导航栏留空间 */
+    }
+    
+    .back-button {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 8px 12px;
+      background-color: #fef3c7;
+      border-left: 4px solid #facc15;
+      color: #333;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .comment-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 16px;
+      padding: 16px;
+      position: relative;
+      padding-bottom: 40px; /* 给删除按钮留空间 */
+    }
+
+    .comment-card h4 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .comment-stars {
+      color: gold;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .comment-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .comment-images img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #imageModal {
+      position: fixed;
+      display: none;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .delete-btn {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      background: #f87171;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .popup {
+      position: fixed;
+      z-index: 9999;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-box {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      max-width: 80%;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 16px;
+    }
+    
+    .popup-box-button {
+      margin-top: 16px;
+      padding: 8px 20px;
+      background-color: #89f0ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .popup-box-button-red {
+      margin-top: 16px;
+      padding: 8px 20px;
+      background-color: #ff0000;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    @media (min-width: 600px) {
+      .container {
+        max-width: 500px;
+        margin: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>我的评论</h1>
+
+  <div class="container">
+    <a href="mine.html" class="back-button">← 返回“我的”</a>
+      
+    <div id="comment-list"></div>
+
+    <!-- 放大图弹窗 -->
+    <div id="imageModal" onclick="this.style.display='none'">
+      <img id="modalImg" style="max-width:90%; max-height:90%;" />
+    </div>
+
+  </div>
+
+  <div id="popup-confirm" class="popup" style="display: none;">
+    <div class="popup-box">
+        <div id="popup-text-confirm">提示内容</div>
+        <button class="popup-box-button-red" onclick="deleteIt()">确定</button>
+        <button class="popup-box-button" onclick="closeConfirm()">取消</button>
+    </div>
+  </div>
+
+  <div id="popup" class="popup" style="display: none;">
+    <div class="popup-box">
+        <div id="popup-text">提示内容</div>
+        <button class="popup-box-button" onclick="closePopup()">确定</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    let loading = false;
+    let hasNext = true;
+    let to_delete = '';
+    
+    const commentList = document.getElementById('comment-list');
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+
+    function resetComments() {
+      currentPage = 1;
+      hasNext = true;
+      commentList.innerHTML = '';
+    }
+
+    function loadComments() {
+      if (loading || !hasNext) return;
+      loading = true;
+
+      let userid = getCookie("userid");
+
+      fetch(`/get_my_comments/?page=${currentPage}`)
+        .then(res => res.json())
+        .then(data => {
+          data.comments.forEach(comment => {
+            const card = document.createElement('div');
+            card.className = 'comment-card';
+
+            card.innerHTML = `
+              <h4>${comment.username}</h4>
+              <div>${comment.canteenName} ${comment.stallName} ${comment.dishName}</div>
+              <div class="comment-stars">${'★'.repeat(comment.rating)}${'☆'.repeat(5 - comment.rating)}</div>
+              <div>${comment.text}</div>
+              <div class="comment-images">${comment.images.map(url => `<img src="${url}" onclick="showImage('${url}')">`).join('')}</div>
+              <br>
+              <div>${comment.timestamp}</div>
+              <button class="delete-btn" data-review-id="${comment.reviewId}">X</button>
+            `;
+
+            commentList.appendChild(card);
+          });
+
+          hasNext = data.has_next;
+          currentPage++;
+          loading = false;
+        });
+    }
+
+    function showImage(url) {
+      modal.style.display = 'flex';
+      modalImg.src = url;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+        loadComments();
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", function () {
+        const message = "{{msg}}"
+        const shouldShow = "{{ success|default:'false' }}".toLowerCase() === 'true';
+        if (shouldShow) {
+          showPopup(message)
+        } else {
+            loadComments();
+        }
+    });
+
+    function showPopup(message) {
+      document.getElementById('popup-text').textContent = message;
+      document.getElementById('popup').style.display = 'flex';
+    }
+
+    function deleteIt() {
+        fetch(`/delete_review/?id=${to_delete}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                resetComments();
+                loadComments();
+                showPopup("删除成功");
+                closeConfirm();
+            } else {
+                showPopup(data.msg || '删除失败');
+            }
+        });
+    }
+    
+    function closePopup() {
+      const back = "{{ back|default:'false' }}".toLowerCase() === 'true';
+      document.getElementById('popup').style.display = 'none';
+      if (back) {
+          window.location.href = '/mine.html';
+      }
+    }
+    
+    function showConfirm(message, review_id) {
+      document.getElementById('popup-text-confirm').textContent = message;
+      document.getElementById('popup-confirm').style.display = 'flex';
+      to_delete = review_id;
+    }
+    
+    function closeConfirm() {
+      document.getElementById('popup-confirm').style.display = 'none';
+    }
+    
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
+    
+    setTimeout(() => {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+      deleteButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const reviewId = this.dataset.reviewId;
+          showConfirm("确定要删除这条评论？", reviewId)
+        });
+      });
+    }, 100);
+    
+  </script>
 </body>
 </html>

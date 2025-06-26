@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 from django.shortcuts import HttpResponse
-from mainPage.views import index
-from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, submit_feedback
+from mainPage.views import index, get_comments
+from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, submit_feedback, get_my_comments, \
+    delete_review
 from addReview.views import addreview, submit_comment
 from search.views import search
 from mine.views import login
@@ -52,5 +53,7 @@ urlpatterns = [
     path('submit_auth/', submit_auth, name='submit_auth'),
     path('submit_feedback/', submit_feedback, name='submit_feedback'),
     path('submit_comment/', submit_comment, name='submit_comment'),
-
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('get_comments/', get_comments, name='get_comments'),
+    path('get_my_comments/', get_my_comments, name='get_my_comments'),
+    path('delete_review/', delete_review, name='delete_review'),
+]

@@ -54,47 +54,55 @@
       border-radius: 12px;
       border: 1px solid #ccc;
       background-color: white;
+      text-align:center;
     }
 
-    /* 评论卡片 */
-    .card {
-      background-color: white;
-      border-radius: 16px;
+    .comment-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 16px;
       padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .card-header {
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-    .stars {
-      color: gold;
+
+    .comment-card h4 {
+      margin: 0 0 4px;
       font-size: 16px;
-      margin-bottom: 6px;
     }
-    .comment {
-      font-size: 14px;
-      color: #333;
+
+    .comment-stars {
+      color: gold;
+      font-size: 18px;
       margin-bottom: 8px;
     }
-    .images {
+
+    .comment-images {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-top: 8px;
     }
-    .images div {
-      width: 60px;
-      height: 60px;
-      background-color: #ddd;
-      border-radius: 8px;
+
+    .comment-images img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .date {
-      font-size: 12px;
-      text-align: right;
-      color: #555;
+
+    #imageModal {
+      position: fixed;
+      display: none;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
     }
+
+
 
     /* 底部导航栏 */
     .bottom-nav {
@@ -163,44 +171,22 @@
 
     <!-- 筛选器 -->
     <div class="filters">
-      <select>
-        <option>食堂：全部</option>
-        <option>美食园</option>
-        <option>奥运食堂</option>
+      <select id="canteen-select" name="canteen">
+          <option value=0>食堂:全部</option>
+      </select >
+      <select id="stall-select" name="stall" disabled>
+          <option value=0>档口:全部</option>
       </select>
-      <select>
-        <option>档口：全部</option>
-        <option>档口1</option>
-        <option>档口2</option>
-      </select>
-      <select>
-        <option>菜品：全部</option>
-        <option>菜品1</option>
-        <option>菜品2</option>
+      <select id="dish-select" name="dish" disabled>
+          <option value=0>菜品:全部</option>
       </select>
     </div>
 
-    <!-- 评论卡片 1 -->
-    <div class="card">
-      <div class="card-header">用户名　食堂/档口/菜品</div>
-      <div class="stars">⭐⭐⭐⭐☆</div>
-      <div class="comment">评论内容</div>
-      <div class="date">2025/6/20</div>
-    </div>
+    <div id="comment-list"></div>
 
-    <!-- 评论卡片 2 -->
-    <div class="card">
-      <div class="card-header">用户名　食堂/档口/菜品</div>
-      <div class="stars">⭐⭐⭐☆☆</div>
-      <div class="comment">评论内容</div>
-      <div class="images">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div class="date">2025/6/20</div>
+    <!-- 放大图弹窗 -->
+    <div id="imageModal" onclick="this.style.display='none'">
+      <img id="modalImg" style="max-width:90%; max-height:90%;" />
     </div>
 
   </div>
@@ -212,5 +198,160 @@
     <button onclick="location.href='mine.html'">我的</button>
   </nav>
 
+  <script>
+    let currentPage = 1;
+    let loading = false;
+    let hasNext = true;
+    let currentCanteen = 0;
+    let currentStall = 0;
+    let currentDish = 0;
+    
+    const commentList = document.getElementById('comment-list');
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    
+    
+    
+    function resetComments() {
+      currentPage = 1;
+      hasNext = true;
+      commentList.innerHTML = '';
+    }
+    
+    function loadComments() {
+      if (loading || !hasNext) return;
+      loading = true;
+
+      fetch(`/get_comments/?page=${currentPage}&canteen=${currentCanteen}&stall=${currentStall}&dish=${currentDish}`)
+        .then(res => res.json())
+        .then(data => {
+          data.comments.forEach(comment => {
+            const card = document.createElement('div');
+            card.className = 'comment-card';
+
+            card.innerHTML = `
+              <h4>${comment.username}</h4>
+              <div>${comment.canteenName} ${comment.stallName} ${comment.dishName}</div>
+              <div class="comment-stars">${'★'.repeat(comment.rating)}${'☆'.repeat(5 - comment.rating)}</div>
+              <div>${comment.text}</div>
+              <div class="comment-images">${comment.images.map(url => `<img src="${url}" onclick="showImage('${url}')">`).join('')}</div>
+              <br>
+              <div>${comment.timestamp}</div>
+            `;
+
+            commentList.appendChild(card);
+          });
+
+          hasNext = data.has_next;
+          currentPage++;
+          loading = false;
+        });
+    }
+
+    function showImage(url) {
+      modal.style.display = 'flex';
+      modalImg.src = url;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+        loadComments();
+      }
+    });
+
+  {#// 首次加载#}
+  {#  window.addEventListener('DOMContentLoaded', loadComments);#}
+    window.addEventListener("DOMContentLoaded", function () {
+        loadComments();
+
+        fetch("/get_canteens/")
+        .then(res => res.json())
+        .then(data => {
+          const canteenSelect = document.getElementById("canteen-select");
+          canteenSelect.innerHTML = '<option value=0>食堂:全部</option>';
+          data.canteens.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.CanteenName;
+            canteenSelect.appendChild(opt);
+          });
+        });
+
+    });
+    
+    document.getElementById("canteen-select").addEventListener("change", function () {
+        const canteenId = this.value;
+        currentCanteen = this.value;
+        const stallSelect = document.getElementById("stall-select");
+        const dishSelect = document.getElementById("dish-select");
+
+        if (!canteenId) {
+          stallSelect.innerHTML = '<option value=0>档口:全部</option>';
+          dishSelect.innerHTML = '<option value=0>菜品:全部</option>';
+          stallSelect.disabled = true;
+          dishSelect.disabled = true;
+          resetComments();
+          loadComments();
+          return;
+          
+      }
+
+        stallSelect.disabled = false;
+        stallSelect.innerHTML = '<option>加载中...</option>';
+
+        fetch(`/get_stalls/?canteen_id=${canteenId}`)
+          .then(res => res.json())
+          .then(data => {
+            stallSelect.innerHTML = '<option value=0>档口:全部</option>';
+            data.stalls.forEach(s => {
+              const opt = document.createElement("option");
+              opt.value = s.id;
+              opt.textContent = s.StallName;
+              stallSelect.appendChild(opt);
+            });
+          });
+        
+        resetComments();
+        loadComments();
+    });
+    
+    document.getElementById("stall-select").addEventListener("change", function () {
+        const stallId = this.value;
+        currentStall = this.value;
+        const dishSelect = document.getElementById("dish-select");
+
+        if (!stallId) {
+          dishSelect.innerHTML = '<option value=0>菜品:全部</option>';
+          dishSelect.disabled = true;
+          resetComments();
+          loadComments();
+          return;
+        }
+
+        dishSelect.disabled = false;
+        dishSelect.innerHTML = '<option>加载中...</option>';
+
+        fetch(`/get_dishes/?stall_id=${stallId}`)
+          .then(res => res.json())
+          .then(data => {
+            dishSelect.innerHTML = '<option value=0>菜品:全部</option>';
+            data.dishes.forEach(s => {
+              const opt = document.createElement("option");
+              opt.value = s.id;
+              opt.textContent = s.DishName;
+              dishSelect.appendChild(opt);
+            });
+          });
+        resetComments();
+        loadComments();
+    });
+    
+    document.getElementById("dish-select").addEventListener("change", function () {
+        currentDish = this.value;
+        resetComments();
+        loadComments();
+    });
+    
+  </script>
 </body>
 </html>
