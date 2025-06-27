@@ -56,72 +56,70 @@
     </div>
   </nav>
 
-  <!-- 主体内容：左右两栏 -->
-  <main class="flex-grow px-6 py-12 max-w-7xl mx-auto">
+  <!-- 主体内容 -->
+  <main class="flex-grow px-6 py-10 max-w-5xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-      <!-- 用户注册请求 -->
-      <section>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">用户注册请求</h2>
-        <div class="space-y-6">
-          {% for user in user_requests %}
-          <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
-            <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">用户名：</span> {{ user.username }}</p>
-              <p><span class="font-semibold">手机号：</span> {{ user.phone }}</p>
-              <p><span class="font-semibold">邮箱：</span> {{ user.email }}</p>
-              <p><span class="font-semibold">学号：</span> {{ user.student_id }}</p>
-              <p><span class="font-semibold">学院：</span> {{ user.college }}</p>
-              <p><span class="font-semibold">注册时间：</span> {{ user.created_at }}</p>
-            </div>
-            <div class="flex space-x-4 mt-4 justify-end">
-              <form method="post" action="{% url 'approve_user' user.id %}">
-                {% csrf_token %}
-                <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 btn-glow-green">同意</button>
-              </form>
-              <form method="post" action="{% url 'reject_user' user.id %}">
-                {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 btn-glow-red">驳回</button>
-              </form>
-            </div>
-          </div>
-          {% empty %}
-          <p class="text-gray-400 text-center">暂无用户注册请求</p>
-          {% endfor %}
-        </div>
-      </section>
-
       <!-- 商家注册请求 -->
       <section>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center md:text-left">商家注册请求</h2>
-        <div class="space-y-6">
-          {% for merchant in merchant_requests %}
-          <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
-            <div class="space-y-2 text-gray-700">
-              <p><span class="font-semibold text-green-600">商家名称：</span> {{ merchant.shop_name }}</p>
-              <p><span class="font-semibold">负责人：</span> {{ merchant.owner_name }}</p>
-              <p><span class="font-semibold">营业执照编号：</span> {{ merchant.license_id }}</p>
-              <p><span class="font-semibold">联系方式：</span> {{ merchant.phone }}</p>
-              <p><span class="font-semibold">注册时间：</span> {{ merchant.created_at }}</p>
-            </div>
-            <div class="flex space-x-4 mt-4 justify-end">
-              <form method="post" action="{% url 'approve_merchant' merchant.id %}">
-                {% csrf_token %}
-                <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 btn-glow-green">同意</button>
-              </form>
-              <form method="post" action="{% url 'reject_merchant' merchant.id %}">
-                {% csrf_token %}
-                <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 btn-glow-red">驳回</button>
-              </form>
-            </div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8">商家注册请求</h2>
+      <p class="text-gray-500 text-sm mt-6">共 {{ total_requests }} 条未处理注册请求</p>
+      <div class="space-y-6 min-h-[300px]" >
+        {% for auth in auth_requests %}
+        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition border border-gray-100">
+          <div class="space-y-2 text-gray-700">
+            <p><span class="font-semibold text-green-600">用户名：</span> {{ auth.Username }}</p>
+            <p><span class="font-semibold">申请认证档口：</span> {{ auth.StallName }}</p>
+            <p><span class="font-semibold">申请认证档口ID：</span> {{ auth.StallID }}</p>
+            <p><span class="font-semibold">申请说明：</span> {{ auth.Describe }}</p>
           </div>
-          {% empty %}
-          <p class="text-gray-400 text-center">暂无商家注册请求</p>
-          {% endfor %}
+          <!-- 操作同意按钮 -->
+          <div class="flex space-x-4 mt-4 justify-end">
+            <form method="post" action="{% url 'admin_register' %} " onsubmit="return confirm('确定要通过“商家：{{ auth.Username }}”的认证申请吗？')">
+              {% csrf_token %}
+              <input type="hidden" name="auth_id" value="{{ auth.id }}">
+              <input type="hidden" name="action" value="approve">
+              <button type="submit" class="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 btn-glow-green">同意</button>
+            </form>
+            <!-- 操作驳回按钮 -->
+            <form method="post" action="{% url 'admin_register' %}" onsubmit="return confirm('确定要驳回“商家：{{ auth.Username }}” 的认证申请吗？')">
+              {% csrf_token %}
+              <input type="hidden" name="auth_id" value="{{ auth.id }}">
+              <input type="hidden" name="action" value="reject">
+              <button type="submit" class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 btn-glow-red">驳回</button>
+            </form>
+          </div>
         </div>
-      </section>
+        {% empty %}
+        <p class="text-gray-400 text-center">暂无商家注册请求</p>
+        {% endfor %}
+      </div>
 
+      <!-- 分页栏 -->
+      <div class="flex flex-wrap justify-center mt-4 gap-2 text-sm">
+        {% if page_obj.number > 1 %}
+          <a href="?page=1" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">« 首页</a>
+          <a href="?page={{ page_obj.previous_page_number }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">‹ 上一页</a>
+        {% else %}
+          <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">« 首页</span>
+          <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">‹ 上一页</span>
+        {% endif %}
+
+        <span class="px-2 py-1 rounded bg-green-500 text-white">
+          第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
+        </span>
+
+        {% if page_obj.number < page_obj.paginator.num_pages %}
+          <a href="?page={{ page_obj.next_page_number }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">下一页 ›</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">末页 »</a>
+        {% else %}
+          <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">下一页 ›</span>
+          <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">末页 »</span>
+        {% endif %}
+      </div>
+
+      </section>
     </div>
+
   </main>
 
   <footer class="bg-white/70 backdrop-blur text-center py-4 text-gray-500 text-sm shadow-inner rounded-t-xl">

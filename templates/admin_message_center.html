@@ -6,15 +6,12 @@
   <title>消息中心 - 管理员界面</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .msg-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.2);
-    }
     .msg-card {
       transition: all 0.3s ease;
     }
-    .msg-btn {
-      transition: all 0.3s ease;
+    .msg-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.2);
     }
   </style>
 </head>
@@ -63,35 +60,60 @@
   <!-- 主体内容 -->
   <main class="flex-grow px-6 py-10 max-w-5xl mx-auto">
     <h1 class="text-3xl font-bold text-gray-800 mb-8">消息中心</h1>
-
+    <p class="text-gray-500 mb-6">共 {{ total_messages }} 条未处理消息</p>
+    <!-- 消息列表 -->
     <div class="space-y-6">
-
-      {% comment %}
-      这里消息数据建议由后端传入，一个for循环渲染
-      {% endcomment %}
-      {% for message in messages %}
-      <div class="bg-white rounded-xl shadow p-6 msg-card" id="msg{{ message.id }}">
+      {% for msg in page_obj %}
+      <div class="bg-white rounded-xl shadow p-6 msg-card" id="msg{{ msg.id }}">
         <div class="flex justify-between items-start flex-wrap gap-4">
-          <div class="space-y-2">
-            <h2 class="text-lg font-semibold text-gray-700">来自：{{ message.sender }}</h2>
-            <p class="text-gray-600">反馈内容：{{ message.content }}</p>
-            <p class="text-sm text-gray-400">发送时间：{{ message.timestamp }}</p>
+          <div class="space-y-2 text-gray-700">
+            <p><strong>👤 用户名：</strong>{{ msg.Username }}</p>
+            {% if msg.CanteenName %}
+              <p><strong>🏠 食堂：</strong>{{ msg.CanteenName }}</p>
+            {% endif %}
+            {% if msg.StallName %}
+              <p><strong>📍 档口：</strong>{{ msg.StallName }}</p>
+            {% endif %}
+            {% if msg.DishName %}
+              <p><strong>🍛 菜品：</strong>{{ msg.DishName }}</p>
+            {% endif %}
+            <p><strong>📝 反馈内容：</strong>{{ msg.Describe }}</p>
           </div>
-          <div class="flex flex-col space-y-2">
-            <button class="msg-btn {% if message.processed %}bg-green-500{% else %}bg-red-500{% endif %} text-white px-4 py-2 rounded-full text-sm font-medium"
-              onclick="handleClick(this)">
-              {% if message.processed %}处理完成{% else %}未处理{% endif %}
+          <form method="post" action="{% url 'admin_message_center' %}" class="self-start" onsubmit="return confirmHandle(this);">
+            {% csrf_token %}
+            <input type="hidden" name="message_id" value="{{ msg.id }}">
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+              点击处理
             </button>
-            <button class="bg-gray-300 hover:bg-red-500 text-gray-800 hover:text-white px-4 py-2 rounded-full text-sm font-medium" onclick="deleteMessage(this)">
-              删除
-            </button>
-          </div>
+          </form>
         </div>
       </div>
       {% empty %}
-      <p class="text-gray-500">暂无消息</p>
+      <p class="text-gray-500">暂无待处理消息</p>
       {% endfor %}
+    </div>
 
+    <!-- 分页栏 -->
+    <div class="flex flex-wrap justify-center mt-4 gap-2 text-sm">
+      {% if page_obj.number > 1 %}
+        <a href="?page=1" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">« 首页</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">‹ 上一页</a>
+      {% else %}
+        <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">« 首页</span>
+        <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">‹ 上一页</span>
+      {% endif %}
+
+      <span class="px-2 py-1 rounded bg-green-500 text-white">
+        第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页
+      </span>
+
+      {% if page_obj.number < page_obj.paginator.num_pages %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">下一页 ›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="px-2 py-1 rounded bg-green-100 hover:bg-green-200">末页 »</a>
+      {% else %}
+        <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">下一页 ›</span>
+        <span class="px-2 py-1 rounded bg-gray-200 text-gray-400 cursor-not-allowed">末页 »</span>
+      {% endif %}
     </div>
   </main>
 
@@ -108,15 +130,9 @@
       mobileMenu.classList.toggle("hidden");
     });
 
-    function handleClick(button) {
-      button.textContent = "处理完成";
-      button.classList.remove("bg-red-500");
-      button.classList.add("bg-green-500");
-    }
-
-    function deleteMessage(button) {
-      const card = button.closest(".msg-card");
-      card.remove(); // 从 DOM 中删除整张卡片
+    // 点击处理按钮弹出确认框
+    function confirmHandle(form) {
+      return confirm("你确定已经处理了该条反馈吗？");
     }
   </script>
 </body>
