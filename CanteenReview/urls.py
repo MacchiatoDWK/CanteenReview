@@ -56,4 +56,4 @@ urlpatterns = [
     path('get_comments/', get_comments, name='get_comments'),
     path('get_my_comments/', get_my_comments, name='get_my_comments'),
     path('delete_review/', delete_review, name='delete_review'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

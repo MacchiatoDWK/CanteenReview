@@ -24,7 +24,7 @@ def mine(request):
 
 def login(request):
     if request.method == "GET":
-        return render(request, 'login.html', {"type": True})
+        return render(request, 'login.html', {"type": 1})
     else:
         user = request.POST.get('user')
         pwd = request.POST.get('pwd')
@@ -38,34 +38,55 @@ def login(request):
                     response.set_cookie('usertype', str(reg_temp.UserType), path='/', max_age=60 * 60 * 24 * 3)
                     return response
                 else:
-                    return render(request, 'login.html', {"error": "用户名或密码不正确", "type": True})
+                    return render(request, 'login.html', {"error": "用户名或密码不正确", "type": 1})
             else:
-                return render(request, 'login.html', {"error": "用户名或密码不正确", "type": True})
+                return render(request, 'login.html', {"error": "用户名或密码不正确", "type": 1})
         else:
-            code_input = request.POST.get('reg_code')
-            code_real = request.session.get('email_code')
-            if code_input != code_real:
-                return render(request, 'login.html', {"error": "验证码不正确", "type": False})
-
             reg_user = request.POST.get('reg_user')
             reg_pwd = request.POST.get('reg_pwd')
             reg_pwd_again = request.POST.get('reg_pwd_again')
             reg_type = request.POST.get('reg_type')
-            if reg_pwd == reg_pwd_again:
-                reg_temp = MM.UserInfo.objects.filter(Username=reg_user)
-                if not reg_temp:
-                    if len(reg_user) < 20 and len(reg_pwd) < 20:
-                        if reg_type == "1":
-                            MM.UserInfo.objects.create(Username=reg_user, Password=reg_pwd, UserType=1)
+            if reg_user is not None and reg_pwd is not None and reg_pwd_again is not None:
+                code_input = request.POST.get('reg_code')
+                code_real = request.session.get('email_code')
+                if code_input != code_real:
+                    return render(request, 'login.html', {"error": "验证码不正确", "type": 2})
+
+                if reg_pwd == reg_pwd_again:
+                    reg_temp = MM.UserInfo.objects.filter(Username=reg_user)
+                    if not reg_temp:
+                        if len(reg_user) < 40 and len(reg_pwd) < 20:
+                            if reg_type == "1":
+                                MM.UserInfo.objects.create(Username=reg_user, Password=reg_pwd, UserType=1)
+                            else:
+                                MM.UserInfo.objects.create(Username=reg_user, Password=reg_pwd, UserType=2)
+                            del request.session['email_code']
+                            return render(request, 'login.html', {"type": 1,
+                                                                                        "success": True,
+                                                                                        "msg": "注册成功"})
                         else:
-                            MM.UserInfo.objects.create(Username=reg_user, Password=reg_pwd, UserType=2)
-                        return render(request, 'login.html', {"type": True})
+                            return render(request, 'login.html', {"error": "注册失败", "type": 2})
                     else:
-                        return render(request, 'login.html', {"error": "注册失败", "type": False})
+                        return render(request, 'login.html', {"error": "该邮箱已注册", "type": 2})
                 else:
-                    return render(request, 'login.html', {"error": "该邮箱已注册", "type": False})
+                    return render(request, 'login.html', {"error": "密码与确认密码不一致", "type": 2})
             else:
-                return render(request, 'login.html', {"error": "密码与确认密码不一致", "type": False})
+                reset_user = request.POST.get('reset_user')
+                reset_pwd = request.POST.get('reset_pwd')
+                code_input = request.POST.get('reset_code')
+                code_real = request.session.get('email_code')
+                if code_input != code_real:
+                    return render(request, 'login.html', {"error": "验证码不正确", "type": 3})
+                else:
+                    reset_temp = MM.UserInfo.objects.filter(Username=reset_user)
+                    if reset_temp is not None:
+                        reset_temp.update(Password = reset_pwd)
+                        del request.session['email_code']
+                        return render(request, 'login.html', {"type": 1,
+                                                                                   "success": True,
+                                                                                   "msg": "密码重置成功"})
+                    else:
+                        return render(request, 'login.html', {"error": "没有该用户", "type": 3})
 
 
 def send_code(request):
