@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count
+from addReview.models import Review
 from admin.models import CanteenInfo, StallInfo, DishInfo
-from mine.models import UserInfo, AuthMessage
+from mine.models import UserInfo, AuthMessage,FeedbackMessage
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator#用于分页导航
 
 # Create your views here.
 
@@ -58,10 +60,17 @@ def admin_register(request):
 
         return redirect(reverse('admin_register'))
 
-    # GET 请求：展示注册认证请求
-    auth_requests = AuthMessage.objects.filter(Validity=1)
+    # GET 请求：展示注册认证请求，添加分页
+    all_auth_requests = AuthMessage.objects.filter(Validity=1)
+
+    # 为分页做准备
+    paginator = Paginator(all_auth_requests, 2)  # 每页显示 5 条
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # 加入 StallName 信息
     auth_with_stall_name = []
-    for auth in auth_requests:
+    for auth in page_obj:
         try:
             stall = StallInfo.objects.get(id=auth.StallID)
             stall_name = stall.StallName
@@ -77,6 +86,8 @@ def admin_register(request):
 
     return render(request, 'admin_register.html', {
         'auth_requests': auth_with_stall_name,
+        'page_obj': page_obj,
+        'total_requests': all_auth_requests.count(),
     })
 
 
@@ -84,6 +95,8 @@ def admin_canteen_manage(request):
     query_result = None
     has_searched = False
     no_result = False
+    canteen_deleted = False
+    stall_deleted = False
     dish_deleted = False
 
     # 处理 POST 请求
@@ -156,7 +169,7 @@ def admin_canteen_manage(request):
             except:
                 return redirect(reverse('admin_canteen_manage') + '?canteen_add_failed=1')
 
-        # 删除菜品
+        # 删除菜品 / 档口 / 食堂 并删除对应评论
         elif 'delete_dish_name' in request.POST or 'delete_stall_name' in request.POST or 'delete_canteen_name' in request.POST:
             canteen_name = request.POST.get('delete_canteen_name', '').strip()
             stall_name = request.POST.get('delete_stall_name', '').strip()
@@ -164,29 +177,47 @@ def admin_canteen_manage(request):
 
             try:
                 if canteen_name and not stall_name and not dish_name:
-                    # 只填了食堂，删除该食堂（会级联删除档口和菜品，假设模型 on_delete=CASCADE）
+                    # 删除整个食堂及其相关档口还有相关菜品及所有相关评论
                     canteen = CanteenInfo.objects.get(CanteenName=canteen_name)
+
+                    # 获取相关档口和菜品 ID
+                    stalls = StallInfo.objects.filter(Canteen=canteen)
+                    stall_ids = list(stalls.values_list('id', flat=True))
+                    dish_ids = list(DishInfo.objects.filter(Stall__in=stalls).values_list('id', flat=True))
+
+                    # 删除评论（ObjType: 1=食堂, 2=档口, 3=菜品）
+                    Review.objects.filter(ObjType=1, ObjID=canteen.id).delete()
+                    Review.objects.filter(ObjType=2, ObjID__in=stall_ids).delete()
+                    Review.objects.filter(ObjType=3, ObjID__in=dish_ids).delete()
+
+                    # 删除食堂
                     canteen.delete()
                     return redirect(reverse('admin_canteen_manage') + '?canteen_deleted=1')
 
                 elif canteen_name and stall_name and not dish_name:
-                    # 填了食堂和档口，删除该档口（会级联删除菜品）
+                    # 删除一个档口及其相关菜品的评论
                     canteen = CanteenInfo.objects.get(CanteenName=canteen_name)
                     stall = StallInfo.objects.get(StallName=stall_name, Canteen=canteen)
+                    dish_ids = list(DishInfo.objects.filter(Stall=stall).values_list('id', flat=True))
+
+                    Review.objects.filter(ObjType=2, ObjID=stall.id).delete()
+                    Review.objects.filter(ObjType=3, ObjID__in=dish_ids).delete()
                     stall.delete()
                     return redirect(reverse('admin_canteen_manage') + '?stall_deleted=1')
 
                 elif canteen_name and stall_name and dish_name:
-                    # 填了食堂、档口和菜品，删除该菜品
+                    # 删除一个菜品及其评论
                     canteen = CanteenInfo.objects.get(CanteenName=canteen_name)
                     stall = StallInfo.objects.get(StallName=stall_name, Canteen=canteen)
                     dish = DishInfo.objects.get(DishName=dish_name, Stall=stall)
+
+                    Review.objects.filter(ObjType=3, ObjID=dish.id).delete()
                     dish.delete()
                     return redirect(reverse('admin_canteen_manage') + '?dish_deleted=1')
 
                 else:
-                    # 参数不完整或不符合预期
                     return redirect(reverse('admin_canteen_manage') + '?delete_failed=1')
+
             except (CanteenInfo.DoesNotExist, StallInfo.DoesNotExist, DishInfo.DoesNotExist):
                 return redirect(reverse('admin_canteen_manage') + '?delete_failed=1')
 
@@ -239,7 +270,7 @@ def admin_canteen_manage(request):
         'query_result': query_result,
         'no_result': no_result,
         'has_searched': has_searched,
-        'dish_deleted': dish_deleted
+
     })
 
 
@@ -289,4 +320,33 @@ def admin_center(request):
 
 
 def admin_message_center(request):
-    return render(request, 'admin_message_center.html')
+    if request.method == 'POST':
+        msg_id = request.POST.get('message_id')
+        if msg_id:
+            FeedbackMessage.objects.filter(id=msg_id).update(Validity=0)
+        return redirect('admin_message_center')
+
+    # 查出有效消息
+    messages = FeedbackMessage.objects.filter(Validity=1)
+
+    enriched_messages = []
+    for msg in messages:
+        enriched = {
+            'id': msg.id,
+            'Username': msg.Username,
+            'Describe': msg.Describe,
+            'CanteenName': CanteenInfo.objects.filter(id=msg.CanteenID).first().CanteenName if msg.CanteenID else None,
+            'StallName': StallInfo.objects.filter(id=msg.StallID).first().StallName if msg.StallID else None,
+            'DishName': DishInfo.objects.filter(id=msg.DishID).first().DishName if msg.DishID else None,
+        }
+        enriched_messages.append(enriched)
+
+    # 分页，每页显示 5 条
+    paginator = Paginator(enriched_messages, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_message_center.html', {
+        'page_obj': page_obj,
+        'total_messages': len(enriched_messages),  # 新增：总条数
+    })
