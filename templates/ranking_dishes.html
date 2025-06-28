@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>菜单排行榜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ffcccb, #ffe0b2); /* 淡粉色到淡黄色渐变背景 */
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .header-title {
+            font-weight: bold;
+            color: #212529; /* 黑色标题 */
+            margin-bottom: 40px;
+        }
+
+        /* 小型返回按钮样式 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #d4edda; /* 浅绿色背景 */
+            color: #495057;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+
+        .back-btn:hover {
+            background-color: #a5d6a7; /* 悬停时背景颜色稍微加深 */
+        }
+
+        .rank-btn {
+            width: 66%;  /* 按钮宽度缩短三分之一 */
+            padding: 30px; /* 按钮厚度增加三倍 */
+            font-size: 1.2rem; /* 增大按钮文本大小 */
+            margin-top: 15px;
+            margin-left: 17%; /* 居中显示按钮 */
+            border-radius: 10px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            background-color: #e0f7fa; /* 淡蓝色背景 */
+            color: #00796b; /* 深绿色文字 */
+            text-align: center; /* 商家名称居中 */
+        }
+
+        .rank-btn:hover {
+            transform: scale(1.05); /* 鼠标悬停时放大 */
+            background-color: #b2ebf2; /* 悬停时的背景色 */
+        }
+
+        .rank-btn:focus {
+            outline: none;
+        }
+
+        .medal {
+            font-size: 1.5rem; /* 增大奖牌图标大小 */
+            font-weight: bold;
+            margin-right: 20px; /* 图标与商家名称之间的间距 */
+        }
+
+        .gold {
+            color: gold; /* 金牌 */
+        }
+
+        .silver {
+            color: silver; /* 银牌 */
+        }
+
+        .bronze {
+            color: #cd7f32; /* 铜牌 */
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-body p {
+            font-size: 1rem;
+            color: #495057; /* 文字颜色 */
+        }
+
+        .additional-info {
+            font-size: 1rem;
+            color: #5f6368; /* 灰色文字 */
+        }
+
+        /* 自适应调整 */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .rank-btn {
+                font-size: 1rem;
+                width: 80%;  /* 在小屏幕上按钮宽度调整 */
+                margin-left: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 返回按钮 -->
+    <button class="back-btn" onclick="window.history.back()">返回</button> <!-- 小型返回按钮 -->
+
+    <div class="container text-center">
+        <h1 class="header-title">
+            <span class="medal gold">🍽️</span> 菜单排行榜 - Top 5
+        </h1>
+
+        <!-- 排行榜 -->
+        <div class="row">
+            <div class="col-md-12">
+                {% for rank in top_dishes %}
+                    <button class="rank-btn" onclick="window.location.href='/details/{{ rank.id }}'">
+                        {% if forloop.first %}
+                            <span class="medal gold">🥇</span>
+                        {% elif forloop.counter == 2 %}
+                            <span class="medal silver">🥈</span>
+                        {% elif forloop.counter == 3 %}
+                            <span class="medal bronze">🥉</span>
+                        {% elif forloop.counter == 4 %}
+                            4️⃣
+                        {% elif forloop.counter == 5 %}
+                            5️⃣
+                        {% endif %}
+
+                        <span style="font-size: 1.5rem; font-weight: bold;">{{ rank.name }}</span>
+                        <p class="additional-info">评论数：{{ rank.reviews_count }} 条 | 评分：{{ rank.rating }} / 5.0</p>
+                        <p class="additional-info">地点：{{ rank.restaurant }}</p>
+                        <p class="additional-info">档口：{{ rank.merchant }}</p>
+
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
