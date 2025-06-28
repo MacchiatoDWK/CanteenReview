@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'mainPage',
     'mine',
     'addReview',
+    'summary',
     'search',
     'admin',
 ]
@@ -83,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'canteenreview',
         'USER': 'root',
-        'PASSWORD': '20040615',
+        'PASSWORD': '!Yjh02385654293',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

@@ -1,10 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>周报总结</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>档口排行榜与周报生成</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff8e1; /* 淡黄色背景 */
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        .container {
+            margin-top: 40px;
+        }
+        .header-title {
+            font-weight: bold;
+            color: #212529; /* 黑色标题 */
+            margin-bottom: 30px;
+        }
+        .btn-container {
+            border: 3px solid #d4edda; /* 淡绿色边框 */
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #ffffff; /* 背景色 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .btn-container h2 {
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            width: 200px;
+            padding: 15px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            transition: transform 0.3s ease; /* 放大动画 */
+        }
+        .action-btn:hover {
+            transform: scale(1.05); /* 鼠标悬停时放大 */
+        }
+        .action-btn-primary {
+            background-color: #ffc107;
+            color: white;
+            border: none;
+        }
+        .action-btn-secondary {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+        /* 返回按钮：淡绿色 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #d4edda; /* 淡绿色背景 */
+            color: #212529; /* 黑色文字 */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 自适应调整 */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.5rem;
+            }
+            .btn-container h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>周报/总结/排行榜</h1>
+
+    <!-- 返回按钮 -->
+    <a href="javascript:history.back()" class="back-btn">返回</a>
+
+    <div class="container">
+        <h1 class="text-center header-title">档口排行榜与周报生成</h1>
+
+        <div class="row">
+            <!-- 左侧：商家排行榜 -->
+            <div class="col-md-4">
+                <div class="btn-container">
+                    <h2 class="mb-4">📊 商家排行榜</h2>
+                    <a href="{% url 'ranking_seller' %}" class="btn action-btn action-btn-primary">查看商家排行榜</a>
+                </div>
+            </div>
+
+            <!-- 中间：菜品排行榜 -->
+            <div class="col-md-4">
+                <div class="btn-container">
+                    <h2 class="mb-4">🍽️ 菜品排行榜</h2>
+                    <a href="{% url 'ranking_dishes' %}" class="btn action-btn action-btn-secondary">查看菜品排行榜</a>
+                </div>
+            </div>
+
+            <!-- 右侧：餐厅排行榜 -->
+            <div class="col-md-4">
+                <div class="btn-container">
+                    <h2 class="mb-4">🏪 餐厅排行榜</h2>
+                    <a href="{% url 'ranking_restaurant' %}" class="btn action-btn action-btn-secondary">查看餐厅排行榜</a>
+                </div>
+            </div>
+
+            <!-- 周报生成 -->
+            <div class="col-md-12">
+                <div class="btn-container">
+                    <h2 class="mb-4">📋 生成食堂周报</h2>
+                    <a href="{% url 'ranking_sumup' %}" class="btn action-btn action-btn-primary">生成周报</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
