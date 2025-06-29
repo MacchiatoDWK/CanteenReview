@@ -108,7 +108,7 @@ def get_dish_ratings():
     one_week_ago = now - timedelta(weeks=1)
 
     # 获取菜品类型的评论（ObjType=2）
-    reviews = Review.objects.filter(ObjType=2, Timestamp__gte=one_week_ago, Timestamp__lte=now)
+    reviews = Review.objects.filter(ObjType=3, Timestamp__gte=one_week_ago, Timestamp__lte=now)
 
     if not reviews.exists():
         print("No dish reviews found in the last week.")
@@ -166,7 +166,7 @@ def get_restaurant_ratings():
     one_week_ago = now - timedelta(weeks=1)  # 一周前的时间
 
     # 获取餐厅类型的评论（ObjType=3）
-    reviews = Review.objects.filter(ObjType=3, Timestamp__gte=one_week_ago, Timestamp__lte=now)
+    reviews = Review.objects.filter(ObjType=1, Timestamp__gte=one_week_ago, Timestamp__lte=now)
 
     # 检查是否找到了评论
     if not reviews.exists():
@@ -276,7 +276,7 @@ def ranking_sumup(request):
 
 def ranking_dishes(request):
     # 获取所有菜品评论数据，只筛选出 ObjType 为 2（菜品类型）的评论
-    dish_reviews = Review.objects.filter(ObjType=2)  # 只获取菜品类型的评论
+    dish_reviews = Review.objects.filter(ObjType=3)  # 只获取菜品类型的评论
 
     # 使用 annotate 来计算每个菜品的平均评分和评论数
     db_dishes = dish_reviews.values('ObjID').annotate(
@@ -307,7 +307,7 @@ def ranking_dishes(request):
 
 def ranking_restaurant(request):
     # 从 Review 表中获取餐厅评论数据
-    restaurant_reviews = Review.objects.filter(ObjType=3)  # 只获取餐厅类型的评论
+    restaurant_reviews = Review.objects.filter(ObjType=1)  # 只获取餐厅类型的评论
 
     # 使用 annotate 来计算每个餐厅的平均评分和评论数
     db_restaurants = restaurant_reviews.values('ObjID').annotate(
@@ -329,9 +329,13 @@ def ranking_restaurant(request):
 
     return render(request, 'ranking_restaurant.html', {'top_restaurants': top_restaurants})
 
+
+from django.db.models import Avg, Count
+
+
 def ranking_seller(request):
-    # 获取所有档口评论数据，只筛选出 ObjType 为 1（档口类型）的评论
-    stall_reviews = Review.objects.filter(ObjType=1)  # 只获取档口类型的评论
+    # 获取所有档口评论数据，只筛选出 ObjType 为 2（档口类型）的评论
+    stall_reviews = Review.objects.filter(ObjType=2)  # 只获取档口类型的评论
 
     # 使用 annotate 来计算每个档口的平均评分和评论数
     db_stalls = stall_reviews.values('ObjID').annotate(
@@ -347,14 +351,34 @@ def ranking_seller(request):
         # 获取所属食堂的名称
         canteen_info = CanteenInfo.objects.get(id=stall_info.Canteen.id)
 
+        # 获取该档口的所有菜品
+        dishes = DishInfo.objects.filter(Stall=stall_info)
+
+        # 对每个菜品计算平均评分并选择评分最高的菜品
+        best_dish = None
+        highest_rating = 0
+
+        for dish in dishes:
+            # 获取该菜品的平均评分
+            dish_avg_rating = Review.objects.filter(ObjID=dish.id, ObjType=3).aggregate(Avg('Rating'))['Rating__avg']
+
+            if dish_avg_rating and dish_avg_rating > highest_rating:
+                best_dish = dish
+                highest_rating = dish_avg_rating
+
+        # 如果找到了评分最高的菜品，则取该菜品名称，否则标记为"无特色菜"
+        specialty = best_dish.DishName if best_dish else '无特色菜'
+
         top_rankings.append({
             'name': stall_info.StallName,  # 获取档口名称
             'location': canteen_info.CanteenName,  # 获取所属食堂名称
             'reviews_count': stall['review_count'],  # 获取评论数量
-            'rating': round(stall['average_rating'], 1) if stall['average_rating'] else 0  # 四舍五入保留一位小数
+            'rating': round(stall['average_rating'], 1) if stall['average_rating'] else 0,  # 四舍五入保留一位小数
+            'specialties': specialty  # 获取特色菜名称
         })
 
     return render(request, 'ranking_seller.html', {'top_rankings': top_rankings})
+
 
 
 
