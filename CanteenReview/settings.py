@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'addReview',
     'search',
     'admin',
+    'merchant'
 ]
 
 MIDDLEWARE = [
