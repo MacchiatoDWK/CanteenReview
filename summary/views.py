@@ -23,7 +23,23 @@ def display_data(request):
 
 def ranking (request):
     return render(request,'ranking.html')
-
+def generate_summary(is_positive=True):
+    if is_positive:
+        positive_summaries = [
+            "这些菜品普遍符合大众口味，价格合理，且服务态度良好。顾客普遍评价为“美味”、“物超所值”。",
+            "顾客反馈非常好，菜品口味丰富，价格实惠，服务态度也让人满意。",
+            "这些菜品深受顾客喜爱，具有独特的风味，顾客普遍给予好评。",
+            "菜品的口感和味道都很受欢迎，价格合理，顾客纷纷表示愿意再次光顾。"
+        ]
+        return random.choice(positive_summaries)
+    else:
+        negative_summaries = [
+            "这些菜品的评分较低，建议改善口感、提供更好的服务，或调整价格策略以吸引顾客。",
+            "顾客对这些菜品的评价不太理想，需进一步提升菜品质量和顾客体验。",
+            "菜品的味道偏淡或口感欠佳，顾客反馈较为冷淡，建议改进。",
+            "这些菜品的评分较低，客户提出了多方面的改进建议，需引起重视。"
+        ]
+        return random.choice(negative_summaries)
 
 '''def ranking_sumup(request):
     # 获取当前日期
@@ -156,7 +172,7 @@ def get_dish_ratings():
     # 按评分排序，选取前五和倒数五个菜品
     sorted_dishes = sorted(dish_ratings, key=lambda x: x['rating'], reverse=True)
     top_five = sorted_dishes[:5]
-    bottom_five = sorted_dishes[-5:]
+    bottom_five = sorted_dishes[-5:][::-1]
 
     return top_five, bottom_five
 
@@ -207,18 +223,27 @@ def get_restaurant_ratings():
         # 根据评分生成餐厅总结
         if average_rating >= 4:
             restaurant_summary = random.choice([
-                "您的餐厅服务与菜品评分很高，请继续保持这一优异表现！",
-                "顾客非常满意，继续维持高质量服务，您餐厅的评分非常优秀！"
+                "餐厅服务与菜品评分非常高，顾客反响热烈，继续保持这份卓越的表现，定能吸引更多回头客！",
+                "顾客对餐厅的评价非常好，服务和菜品都非常到位，继续发扬光大，保持高标准！",
+                "餐厅在顾客心中已经建立了很强的好感，维持这种优质的体验，定能长期稳定客户群。",
+                "评分非常高，餐厅表现优秀，建议加强创新，保持并提升当前服务水平！",
+                "顾客非常满意，您的餐厅表现出色，继续提供这一高质量的餐饮体验，赢得更多忠实顾客！"
             ])
         elif 3 <= average_rating < 4:
             restaurant_summary = random.choice([
-                "餐厅服务和菜品评分不错，但仍有提升空间，请继续优化。",
-                "风味和服务都有不错表现，建议进一步提升顾客满意度。"
+                "餐厅服务和菜品表现不错，顾客总体满意，但仍有一些地方可以做得更好，请继续提升！",
+                "风味和服务表现稳定，餐厅已具备良好的基础，进一步优化顾客细节体验会让评分更高！",
+                "评分良好，餐厅在很多方面都表现不错，但细节的优化和创新会帮助您获得更多好评。",
+                "餐厅整体表现不错，但仍有提升空间，建议优化菜品口味和服务细节，争取更高评分。",
+                "餐厅有不错的基础，顾客反馈较好，进一步提升餐饮质量和服务体验，能带来更多顾客满意！"
             ])
         else:
             restaurant_summary = random.choice([
-                "餐厅评分较低，请认真倾听顾客反馈并进行改善。",
-                "需要改善餐厅的质量和服务，以提升顾客体验和满意度。"
+                "餐厅评分偏低，顾客反馈存在不满，建议重视顾客评价，提升服务质量和菜品口味。",
+                "餐厅评分较低，需要积极听取顾客意见并立即改进，改善菜品和服务，才能提高顾客满意度。",
+                "顾客对餐厅的整体评分较低，急需提升菜品质量和服务水平，才能赢得更多顾客的认可。",
+                "餐厅评分较低，请务必关注顾客反馈，优化菜品和服务，提升餐厅整体水平。",
+                "餐厅评分较低，需要改善菜品口味和提升服务质量，以便更好地满足顾客需求，增加回头客。"
             ])
 
         # 将数据添加到列表中
@@ -232,6 +257,7 @@ def get_restaurant_ratings():
 
     return restaurant_ratings
 
+
 def ranking_sumup(request):
     # 获取餐厅评分总结
     restaurant_ratings = get_restaurant_ratings()
@@ -242,8 +268,9 @@ def ranking_sumup(request):
     # 商家评分总结
     summary = "根据最新的评分数据，您的餐厅表现如下："
 
-    # 菜品总结话术
-    top_five_summary = "上周好评榜前五分别是："
+    # 好评榜总结话术
+    top_five_summary = generate_summary(is_positive=True)
+
     top_five = []
     for i, dish in enumerate(top_five_dishes, 1):
         top_five.append({
@@ -251,9 +278,10 @@ def ranking_sumup(request):
             'stall_name': dish['stall_name'],
             'rating': dish['rating']
         })
-        top_five_summary += f"{i}. {dish['dish_name']}，档口{dish['stall_name']}，评分：{dish['rating']}；"
 
-    bottom_five_summary = "有待改进榜："
+    # 差评榜总结话术
+    bottom_five_summary = generate_summary(is_positive=False)
+
     bottom_five = []
     for i, dish in enumerate(bottom_five_dishes, 1):
         bottom_five.append({
@@ -261,7 +289,6 @@ def ranking_sumup(request):
             'stall_name': dish['stall_name'],
             'rating': dish['rating']
         })
-        bottom_five_summary += f"{i}. {dish['dish_name']}，档口{dish['stall_name']}，评分：{dish['rating']}；"
 
     # 返回渲染模板
     return render(request, 'ranking_sumup.html', {

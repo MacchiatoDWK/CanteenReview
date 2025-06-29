@@ -39,32 +39,30 @@
             background-color: #a5d6a7; /* 悬停时背景颜色稍微加深 */
         }
 
-        .rank-btn {
-            width: 66%;  /* 按钮宽度缩短三分之一 */
-            padding: 30px; /* 按钮厚度增加三倍 */
-            font-size: 1.2rem; /* 增大按钮文本大小 */
+        /* 菜单展示框样式 */
+        .rank-card {
+            width: 66%;  /* 卡片宽度缩短三分之一 */
+            padding: 30px; /* 卡片厚度增加 */
+            font-size: 1.2rem; /* 增大卡片文本大小 */
             margin-top: 15px;
-            margin-left: 17%; /* 居中显示按钮 */
+            margin-left: 17%; /* 居中显示卡片 */
             border-radius: 10px;
             transition: transform 0.3s ease, background-color 0.3s ease;
             background-color: #e0f7fa; /* 淡蓝色背景 */
             color: #00796b; /* 深绿色文字 */
-            text-align: center; /* 商家名称居中 */
+            text-align: center; /* 菜品名称居中 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .rank-btn:hover {
+        .rank-card:hover {
             transform: scale(1.05); /* 鼠标悬停时放大 */
             background-color: #b2ebf2; /* 悬停时的背景色 */
-        }
-
-        .rank-btn:focus {
-            outline: none;
         }
 
         .medal {
             font-size: 1.5rem; /* 增大奖牌图标大小 */
             font-weight: bold;
-            margin-right: 20px; /* 图标与商家名称之间的间距 */
+            margin-right: 20px; /* 图标与菜品名称之间的间距 */
         }
 
         .gold {
@@ -111,9 +109,9 @@
                 font-size: 1.5rem;
             }
 
-            .rank-btn {
+            .rank-card {
                 font-size: 1rem;
-                width: 80%;  /* 在小屏幕上按钮宽度调整 */
+                width: 80%;  /* 在小屏幕上卡片宽度调整 */
                 margin-left: 10%;
             }
         }
@@ -133,25 +131,16 @@
         <div class="row">
             <div class="col-md-12">
                 {% for rank in top_dishes %}
-                    <button class="rank-btn" onclick="window.location.href='/details/{{ rank.id }}'">
-                        {% if forloop.first %}
-                            <span class="medal gold">🥇</span>
-                        {% elif forloop.counter == 2 %}
-                            <span class="medal silver">🥈</span>
-                        {% elif forloop.counter == 3 %}
-                            <span class="medal bronze">🥉</span>
-                        {% elif forloop.counter == 4 %}
-                            4️⃣
-                        {% elif forloop.counter == 5 %}
-                            5️⃣
-                        {% endif %}
+                    <div class="rank-card">
+                        <span class="medal {% if forloop.first %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}">
+                            {% if forloop.first %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% elif forloop.counter == 4 %}4️⃣{% elif forloop.counter == 5 %}5️⃣{% endif %}
+                        </span>
 
                         <span style="font-size: 1.5rem; font-weight: bold;">{{ rank.name }}</span>
                         <p class="additional-info">评论数：{{ rank.reviews_count }} 条 | 评分：{{ rank.rating }} / 5.0</p>
                         <p class="additional-info">地点：{{ rank.restaurant }}</p>
                         <p class="additional-info">档口：{{ rank.merchant }}</p>
-
-                    </button>
+                    </div>
                 {% endfor %}
             </div>
         </div>

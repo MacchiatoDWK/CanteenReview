@@ -130,7 +130,7 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p class="summary-text">这些菜品普遍符合大众口味，价格合理，且服务态度良好。顾客普遍评价为“美味”、“物超所值”。</p>
+                        <p class="summary-text">{{ top_five_summary }}</p>
                     </div>
 
                     <!-- 待改进榜 -->
@@ -143,7 +143,7 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p class="summary-text">这些菜品的评分较低，建议改善口感、提供更好的服务，或调整价格策略以吸引顾客。</p>
+                        <p class="summary-text">{{ bottom_five_summary }}</p>
                     </div>
                 </div>
             </div>
