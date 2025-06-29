@@ -144,17 +144,7 @@ def manager(request):
                 })
         else:
             return render(request, 'auth.html')
-    # 确保Cookie正确设置
-    response = render(request, 'manager.html')
-
-    # 重新设置Cookie，确保它们存在且有效
-    if not request.COOKIES.get('userid'):
-        response.set_cookie('userid', str(userid), path='/', max_age=60 * 60 * 24 * 3)
-    if not request.COOKIES.get('usertype'):
-        response.set_cookie('usertype', str(usertype), path='/', max_age=60 * 60 * 24 * 3)
-    if not request.COOKIES.get('username'):
-        response.set_cookie('username', username, path='/', max_age=60 * 60 * 24 * 3)
-    return response
+    return render(request,'manager.html')
 
 
 def get_stalls(request):

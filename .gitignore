@@ -10,6 +10,8 @@
 /admin/migrations
 /mine/migrations
 /addReview/migrations
+/search/migrations
+/merchant/migrations
 /media/comments/
 
 addReview\__pycache__

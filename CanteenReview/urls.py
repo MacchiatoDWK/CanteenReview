@@ -70,7 +70,7 @@ path('detail/<int:item_id>/', detail, name='detail'),
     path('get_stalls/', get_stalls, name='get_stalls'),
     path('get_dishes/', get_dishes, name='get_dishes'),
 
-    #path('ranking.html', views.rank, name='ranking'),  # 你需要在views.py中定义'views.rank'方法
+    #path('ranking.html', views.rank, name='ranking'),
     path('ranking_seller/', ranking_seller, name='ranking_seller'),
     path('ranking_sumup/', ranking_sumup, name='ranking_sumup'),
     path('ranking_restaurant.html', ranking_restaurant, name='ranking_restaurant'),  # 餐厅排行榜页面

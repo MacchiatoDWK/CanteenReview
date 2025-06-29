@@ -44,6 +44,50 @@
             color: #999;
             font-size: 12px;
         }
+        .comment-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin: 16px;
+            padding: 16px;
+        }
+
+        .comment-card h4 {
+          margin: 0 0 4px;
+          font-size: 16px;
+        }
+
+        .comment-stars {
+          color: gold;
+          font-size: 18px;
+          margin-bottom: 8px;
+        }
+
+        .comment-images {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 8px;
+        }
+
+        .comment-images img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+
+        #imageModal {
+          position: fixed;
+          display: none;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0,0,0,0.7);
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+        }
     </style>
 </head>
 <body>
@@ -56,28 +100,48 @@
 </div>
 
 <div class="reviews">
-    <h2>用户评论 ({{ reviews.count }})</h2>
+    <h2>用户评论 ({{ count }})</h2>
+
 
     {% if reviews %}
         {% for comment in reviews %}
-            <div class="review-item">
-                <div class="review-header">
-                    {{ comment.Username|default:"匿名用户" }}
-                    <span class="rating">评分：{{ comment.Rating }}/5</span>
+            <div class="comment-card">
+                <h4>{{comment.Username}}</h4>
+                <div class="comment-stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= comment.Rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="review-content">
-                    {{ comment.Describe|linebreaksbr }}
+                <div>{{ comment.Describe }}</div>
+                <br>
+                <div class="comment-images">
+                  {% for img_url in comment.Images %}
+                    <img src="{{ img_url }}" alt="评论图片" onclick="showImage(this.src)">
+                  {% endfor %}
                 </div>
-                <div class="timestamp">
-                    评论时间：{{ comment.Timestamp|date:"Y-m-d H:i" }}
-                </div>
-             
+                <br>
+                <div>{{ comment.Timestamp }}</div>
             </div>
         {% endfor %}
     {% else %}
         <p>暂无评论，快来发表第一个评论吧！</p>
     {% endif %}
+    <div id="imageModal" onclick="this.style.display='none'">
+        <img id="modalImg" style="max-width: 90%; max-height: 90%;" />
+    </div>
 </div>
 
+<script>
+  function showImage(url) {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    modalImg.src = url;
+    modal.style.display = "flex";
+  }
+</script>
 </body>
 </html>

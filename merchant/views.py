@@ -20,17 +20,18 @@ def get_merchant_stalls(request):
     userid = request.COOKIES.get('userid')
     usertype = request.COOKIES.get('usertype')
     username = request.COOKIES.get('username')
-    
+
     if not userid:
         return JsonResponse({'success': False, 'msg': '请先登录'})
-    
+
     # 获取商家信息
     try:
         user = UserInfo.objects.get(id=userid)
         
         if user.UserType != 2:  # 确保是商家用户
             return JsonResponse({'success': False, 'msg': '无权限访问'})
-        
+
+
         # 如果商家已经绑定了档口
         if user.StallID:
             try:
