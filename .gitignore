@@ -12,3 +12,9 @@
 /addReview/migrations
 /media/comments/
 
+addReview\__pycache__
+admin\__pycache__
+mine\__pycache__
+mainPage\__pycache__
+search\__pycache__
+CanteenReview\__pycache__
