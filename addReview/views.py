@@ -14,7 +14,14 @@ def addreview(request):
     usertype = request.COOKIES.get('usertype')
     username = request.COOKIES.get('username')
     if userid is not None and usertype is not None and username is not None:
-        return render(request, 'add.html')
+        if usertype != '1':
+            return render(request, 'add.html', {
+                'success': True,
+                'msg': '当前用户类型无法发表评论',
+                'back': True
+            })
+        else:
+            return render(request, 'add.html')
     else:
         return render(request, 'add.html', {
             'success': True,

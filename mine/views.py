@@ -114,6 +114,13 @@ def send_code(request):
 
 def manager(request):
     userid = request.COOKIES.get('userid')
+    usertype = request.COOKIES.get('usertype')
+    if usertype != '2':
+        return render(request, 'auth.html', {
+            'success': True,
+            'msg': '非商家用户',
+            'back': True
+        })
     if userid is None:
         return render(request, 'index.html')
     else:
