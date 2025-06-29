@@ -5,6 +5,8 @@ from addReview.models import Review
 from django.db.models import Avg, Count
 from mine.models import UserInfo
 import random  # 导入随机模块
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 def display_data(request):
     # 查询数据库中的所有数据
@@ -22,23 +24,39 @@ def display_data(request):
 def ranking (request):
     return render(request,'ranking.html')
 
-def ranking_sumup(request):
-    # 设置默认的用户类型和档口ID
-    user_type = '商家'  # 默认为商家
-    stall_id = 1  # 默认为档口ID 4
 
-    # 获取该档口的菜品
-    dishes = DishInfo.objects.filter(Stall_id=stall_id)
+'''def ranking_sumup(request):
+    # 获取当前日期
+    today = datetime.now()
 
-    # 用来存储每个菜品的评分、评论数和分类
-    dish_ratings = []
+    # 计算上一周的起始日期（上周一）
+    last_week_start = today - timedelta(days=today.weekday() + 7)  # 上周一
+    # 计算上一周的结束日期（上周日）
+    last_week_end = last_week_start + timedelta(days=6)  # 上周日
 
-    # 获取该档口的评分数据
-    stall_reviews = Review.objects.filter(ObjType=1, ObjID=stall_id)  # 获取档口类型的评论
-    average_rating = stall_reviews.aggregate(Avg('Rating'))['Rating__avg'] or 0
+    # 转换 naive datetime 为 aware datetime
+    last_week_start = timezone.make_aware(last_week_start)
+    last_week_end = timezone.make_aware(last_week_end)
 
-    for dish in dishes:
-        reviews = Review.objects.filter(ObjType=2, ObjID=dish.id)  # 过滤出菜品的所有评论
+
+
+    # 获取餐厅类型（ObjType=3）的评论
+    restaurant_reviews = Review.objects.filter(ObjType=3, Timestamp__range=[last_week_start, last_week_end])
+
+    # 用来存储每个餐厅的评分、评论数和总结
+    restaurant_ratings = []
+
+    # 获取所有餐厅ID并按ID分类
+    restaurant_ids = restaurant_reviews.values('ObjID').distinct()
+
+    if not restaurant_ids:
+        print("No restaurant reviews found for distinct restaurant IDs.")
+
+    for restaurant in restaurant_ids:
+        # 获取该餐厅ID的所有评论
+        reviews = restaurant_reviews.filter(ObjID=restaurant['ObjID'])
+
+        # 计算餐厅的平均评分
         avg_rating = reviews.aggregate(Avg('Rating'))['Rating__avg'] or 0
         review_count = reviews.count()
 
@@ -50,64 +68,211 @@ def ranking_sumup(request):
         else:
             category = '不合格'
 
-        # 根据菜品评分生成个性化总结
+        # 根据餐厅评分生成个性化总结
         if avg_rating >= 4:
-            dish_summary = random.choice([
-                f"{dish.DishName} 口味绝佳，深受顾客喜爱，继续保持高品质！",
-                f"{dish.DishName} 在顾客中的口碑很好，火候掌握得相当到位，继续加油！"
-            ])
+            restaurant_summary = f"餐厅的评分非常高，顾客评价极好，继续保持优质服务！"
         elif 3 <= avg_rating < 4:
-            dish_summary = random.choice([
-                f"{dish.DishName} 的口味和火候还有提升空间，建议加强菜品的一致性。",
-                f"{dish.DishName} 在顾客中的评价比较平衡，建议加强菜品的风味调配。"
-            ])
+            restaurant_summary = f"餐厅评分较好，但还有进一步提升的空间，请继续改善服务质量。"
         else:
-            dish_summary = random.choice([
-                f"{dish.DishName} 的评分较低，建议重新调整菜品配方和火候，提升顾客体验。",
-                f"{dish.DishName} 在顾客中的评分较低，请根据顾客反馈改善口味和质感。"
-            ])
+            restaurant_summary = f"餐厅评分较低，需要从顾客反馈中改进质量和服务。"
 
-        # 添加到菜品评分列表
-        dish_ratings.append({
-            'name': dish.DishName,
-            'rating': round(avg_rating, 1) if avg_rating else 0,
+        # 添加到餐厅评分列表
+        restaurant_ratings.append({
+            'restaurant_id': restaurant['ObjID'],
+            'rating': round(avg_rating, 1),
             'review_count': review_count,
             'category': category,
-            'dish_summary': dish_summary  # 菜品总结
+            'restaurant_summary': restaurant_summary
         })
 
-    # 定义档口总结话术
-    high_rating_summaries = [
-        "加油继续保持！您的档口和菜品的评分非常高，继续保持优秀的服务与品质！",
-        "非常棒！档口和菜品的评分处于领先水平，继续维持高品质服务！",
-        "优秀的表现！评分很高，继续保持这种水准，顾客会更加满意！"
-    ]
-
-    medium_rating_summaries = [
-        "风味与火候有待提高，请继续改进以提升客户体验和整体满意度。",
-        "您已经做得很好了！但风味和火候方面还有一些提升空间。",
-        "整体不错，但有些菜品的风味或火候还需继续完善，确保一致性！"
-    ]
-
-    low_rating_summaries = [
-        "情况不太乐观，要想办法改善一下了，考虑从菜品的质量和服务方面入手。",
-        "您的档口和菜品评分较低，请尽快调整风味和质量，提升顾客满意度。",
-        "需要加大改进力度，顾客对部分菜品的评价不高，务必从细节做起！"
-    ]
-
-    # 根据评分选择对应的总结话术
-    if average_rating >= 4:
-        summary = random.choice(high_rating_summaries)
-    elif 3 <= average_rating < 4:
-        summary = random.choice(medium_rating_summaries)
+    # 商家评分总结逻辑
+    if restaurant_ratings:
+        avg_overall_rating = sum([r['rating'] for r in restaurant_ratings]) / len(restaurant_ratings)
+        if avg_overall_rating >= 4:
+            summary = "总体表现非常优秀，餐厅评价很高，请继续保持！"
+        elif 3 <= avg_overall_rating < 4:
+            summary = "餐厅评分良好，但仍有提升空间，请注意顾客反馈。"
+        else:
+            summary = "餐厅评分较低，需尽快提升整体服务和质量，关注顾客体验。"
     else:
-        summary = random.choice(low_rating_summaries)
+        summary = "没有收到足够的评论，无法生成总结。"
 
+    # 渲染结果
     return render(request, 'ranking_sumup.html', {
-        'dish_ratings': dish_ratings,  # 菜品评分数据
-        'average_rating': round(average_rating, 1),  # 商家评分
+        'restaurant_ratings': restaurant_ratings,  # 餐厅评分数据
         'summary': summary  # 商家评级总结
+    })'''
+
+def get_dish_ratings():
+    now = timezone.now()
+    one_week_ago = now - timedelta(weeks=1)
+
+    # 获取菜品类型的评论（ObjType=2）
+    reviews = Review.objects.filter(ObjType=2, Timestamp__gte=one_week_ago, Timestamp__lte=now)
+
+    if not reviews.exists():
+        print("No dish reviews found in the last week.")
+        return []
+
+    dish_ratings = []
+    dish_ids = reviews.values('ObjID').distinct()  # 获取所有不同的菜品ID
+
+    # 获取每个菜品的评分数据
+    for dish in dish_ids:
+        dish_id = dish['ObjID']
+        try:
+            dish_info = DishInfo.objects.get(id=dish_id)
+            dish_name = dish_info.DishName
+            stall_name = dish_info.Stall.StallName  # 获取菜品所属档口名称
+        except DishInfo.DoesNotExist:
+            dish_name = "未知菜品"
+            stall_name = "未知档口"
+
+        # 获取该菜品的所有评论
+        dish_reviews = reviews.filter(ObjID=dish_id)
+        average_rating = dish_reviews.aggregate(Avg('Rating'))['Rating__avg'] or 0
+        review_count = dish_reviews.count()
+
+        if average_rating >= 4:
+            category = '优秀'
+        elif 3 <= average_rating < 4:
+            category = '合格'
+        else:
+            category = '不合格'
+
+        dish_summary = random.choice([
+            f"{dish_name} 评分很高，顾客好评如潮，继续保持高质量！",
+            f"{dish_name} 在顾客中反响不错，继续优化风味和品质！"
+        ]) if average_rating >= 4 else "菜品评分较低，请改进菜品质量和口感。"
+
+        dish_ratings.append({
+            'dish_name': dish_name,
+            'stall_name': stall_name,
+            'rating': round(average_rating, 1),
+            'category': category,
+            'dish_summary': dish_summary
+        })
+
+    # 按评分排序，选取前五和倒数五个菜品
+    sorted_dishes = sorted(dish_ratings, key=lambda x: x['rating'], reverse=True)
+    top_five = sorted_dishes[:5]
+    bottom_five = sorted_dishes[-5:]
+
+    return top_five, bottom_five
+
+def get_restaurant_ratings():
+    # 获取当前时间和一周前的时间
+    now = timezone.now()  # 当前时间
+    one_week_ago = now - timedelta(weeks=1)  # 一周前的时间
+
+    # 获取餐厅类型的评论（ObjType=3）
+    reviews = Review.objects.filter(ObjType=3, Timestamp__gte=one_week_ago, Timestamp__lte=now)
+
+    # 检查是否找到了评论
+    if not reviews.exists():
+        print("No restaurant reviews found in the last week.")
+        return []
+
+    # 用来存储每个餐厅的评分、评论数和分类
+    restaurant_ratings = []
+
+    # 获取餐厅的评分数据
+    restaurant_ids = reviews.values('ObjID').distinct()  # 获取所有不同的餐厅ID
+
+    for restaurant in restaurant_ids:
+        restaurant_id = restaurant['ObjID']
+
+        # 根据 ObjID 从 CanteenInfo 表中获取餐厅名称
+        try:
+            restaurant_info = CanteenInfo.objects.get(id=restaurant_id)
+            restaurant_name = restaurant_info.CanteenName  # 获取餐厅名称
+        except CanteenInfo.DoesNotExist:
+            restaurant_name = "未知餐厅"  # 如果没有找到餐厅，默认名称为"未知餐厅"
+
+        # 获取该餐厅的所有评论
+        restaurant_reviews = reviews.filter(ObjID=restaurant_id)
+
+        # 计算该餐厅的评分数据
+        average_rating = restaurant_reviews.aggregate(Avg('Rating'))['Rating__avg'] or 0
+        review_count = restaurant_reviews.count()
+
+        # 根据评分进行分类
+        if average_rating >= 4:
+            category = '优秀'
+        elif 3 <= average_rating < 4:
+            category = '合格'
+        else:
+            category = '不合格'
+
+        # 根据评分生成餐厅总结
+        if average_rating >= 4:
+            restaurant_summary = random.choice([
+                "您的餐厅服务与菜品评分很高，请继续保持这一优异表现！",
+                "顾客非常满意，继续维持高质量服务，您餐厅的评分非常优秀！"
+            ])
+        elif 3 <= average_rating < 4:
+            restaurant_summary = random.choice([
+                "餐厅服务和菜品评分不错，但仍有提升空间，请继续优化。",
+                "风味和服务都有不错表现，建议进一步提升顾客满意度。"
+            ])
+        else:
+            restaurant_summary = random.choice([
+                "餐厅评分较低，请认真倾听顾客反馈并进行改善。",
+                "需要改善餐厅的质量和服务，以提升顾客体验和满意度。"
+            ])
+
+        # 将数据添加到列表中
+        restaurant_ratings.append({
+            'restaurant_name': restaurant_name,  # 使用餐厅名称代替餐厅ID
+            'review_count': review_count,
+            'rating': round(average_rating, 1),  # 餐厅评分
+            'category': category,
+            'restaurant_summary': restaurant_summary  # 餐厅总结
+        })
+
+    return restaurant_ratings
+
+def ranking_sumup(request):
+    # 获取餐厅评分总结
+    restaurant_ratings = get_restaurant_ratings()
+
+    # 获取菜品评分总结
+    top_five_dishes, bottom_five_dishes = get_dish_ratings()
+
+    # 商家评分总结
+    summary = "根据最新的评分数据，您的餐厅表现如下："
+
+    # 菜品总结话术
+    top_five_summary = "上周好评榜前五分别是："
+    top_five = []
+    for i, dish in enumerate(top_five_dishes, 1):
+        top_five.append({
+            'dish_name': dish['dish_name'],
+            'stall_name': dish['stall_name'],
+            'rating': dish['rating']
+        })
+        top_five_summary += f"{i}. {dish['dish_name']}，档口{dish['stall_name']}，评分：{dish['rating']}；"
+
+    bottom_five_summary = "有待改进榜："
+    bottom_five = []
+    for i, dish in enumerate(bottom_five_dishes, 1):
+        bottom_five.append({
+            'dish_name': dish['dish_name'],
+            'stall_name': dish['stall_name'],
+            'rating': dish['rating']
+        })
+        bottom_five_summary += f"{i}. {dish['dish_name']}，档口{dish['stall_name']}，评分：{dish['rating']}；"
+
+    # 返回渲染模板
+    return render(request, 'ranking_sumup.html', {
+        'restaurant_ratings': restaurant_ratings,  # 餐厅评分数据
+        'summary': summary,  # 商家评分总结
+        'top_five': top_five,  # 好评榜数据
+        'bottom_five': bottom_five,  # 有待改进榜数据
+        'top_five_summary': top_five_summary,  # 好评榜总结
+        'bottom_five_summary': bottom_five_summary  # 有待改进榜总结
     })
+
 
 def ranking_dishes(request):
     # 获取所有菜品评论数据，只筛选出 ObjType 为 2（菜品类型）的评论
