@@ -20,6 +20,7 @@ from mine.views import mine, get_stalls, get_canteens, submit_auth, get_dishes, 
     delete_review
 from addReview.views import addreview, submit_comment
 from search.views import search
+from search.views import detail
 from mine.views import login
 from mine.views import manager
 from mine.views import my_comments
@@ -41,7 +42,12 @@ urlpatterns = [
     path('index.html', index),
     path('mine.html', mine),
     path('add.html', addreview),
-    path('search.html', search),
+    #path('search.html', search),
+path('search.html', search, name='search'),
+
+    #path('detail.html', detail, name='detail'),
+path('detail/<int:item_id>/', detail, name='detail'),
+
     path('login.html', login),
     #path('admin.html', admin),
     path('manager.html', manager),

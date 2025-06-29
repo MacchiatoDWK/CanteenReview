@@ -164,10 +164,12 @@
   <div class="container">
 
     <!-- 搜索框 -->
-    <form class="search-bar" action="search.html">
-      <input type="text" placeholder="搜索..." />
+ <form class="search-bar" action="search.html" method="get">
+      <input type="text" name="q" placeholder="搜索..." />
       <button type="submit">🔍</button>
     </form>
+
+
 
     <!-- 筛选器 -->
     <div class="filters">
@@ -351,7 +353,10 @@
         resetComments();
         loadComments();
     });
-    
+ 
+  
+
+
   </script>
 </body>
 </html>

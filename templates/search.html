@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>搜索</title>
+    <meta charset="UTF-8" />
+    <title>菜品搜索 - 食堂评价系统</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; background: #f9f9f9; margin: 0; padding: 20px;}
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 10px #ccc; border-radius: 8px; }
+        h1 { color: #333; }
+        form { margin-bottom: 30px; }
+        input[type="text"] { width: 70%; padding: 10px; font-size: 16px; border: 1px solid #aaa; border-radius: 4px; }
+        button { padding: 10px 20px; font-size: 16px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #218838; }
+        ul { list-style: none; padding: 0; }
+        li { border-bottom: 1px solid #eee; padding: 10px 0; }
+        a.detail-link { color: #007bff; text-decoration: none; }
+        a.detail-link:hover { text-decoration: underline; }
+        .dish-name { font-size: 18px; font-weight: bold; color: #222; }
+        .info { color: #555; margin-top: 5px; }
+        .no-result { color: #999; font-style: italic; }
+    </style>
 </head>
 <body>
-    <h1>搜索</h1>
+<div class="container">
+    <h1>菜品搜索</h1>
+    <form method="get" action="{% url 'search' %}">
+        <input type="text" name="q" placeholder="请输入菜品名称" value="{{ query }}" autofocus />
+        <button type="submit">搜索</button>
+    </form>
+
+    {% if query %}
+        <h2>搜索结果： "{{ query }}"</h2>
+        {% if results %}
+            <ul>
+                {% for item in results %}
+                <li>
+                    <span class="dish-name">{{ item.DishName }}</span><br />
+                    <span class="info">档口: {{ item.Stall.StallName }} | 餐厅: {{ item.Stall.Canteen.CanteenName }}</span><br />
+                    <a class="detail-link" href="{% url 'detail' item.id %}">查看详情 &raquo;</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-result">没有找到相关菜品。</p>
+        {% endif %}
+    {% else %}
+        <p>请输入关键词进行搜索。</p>
+    {% endif %}
+</div>
 </body>
 </html>
