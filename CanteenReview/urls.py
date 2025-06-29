@@ -27,6 +27,7 @@ from mine.views import feedback
 from mine.views import rank
 from mine.views import send_code
 from admin import views
+from merchant.views import get_stall_reviews, generate_weekly_report, get_report_history, get_merchant_stalls, get_report_detail
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -62,4 +63,10 @@ urlpatterns = [
     path('get_comments/', get_comments, name='get_comments'),
     path('get_my_comments/', get_my_comments, name='get_my_comments'),
     path('delete_review/', delete_review, name='delete_review'),
+    # 商家管理页面的API
+    path('get_merchant_stalls/', get_merchant_stalls, name='get_merchant_stalls'),
+    path('get_stall_reviews/', get_stall_reviews, name='get_stall_reviews'),
+    path('generate_weekly_report/', generate_weekly_report, name='generate_weekly_report'),
+    path('get_report_history/', get_report_history, name='get_report_history'),
+    path('get_report_detail/', get_report_detail, name='get_report_detail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -114,29 +114,63 @@ def send_code(request):
 
 def manager(request):
     userid = request.COOKIES.get('userid')
+    usertype = request.COOKIES.get('usertype')
+    username = request.COOKIES.get('username')
+    
+    print(f"manager视图 - userid: {userid}, usertype: {usertype}, username: {username}")
+    
     if userid is None:
+        print("用户未登录，重定向到首页")
         return render(request, 'index.html')
-    else:
-        stallid = MM.UserInfo.objects.filter(id=userid).first().StallID
+    
+    # 确保用户是商家
+    if usertype != '2':
+        print(f"用户类型不是商家: {usertype}")
+        return render(request, 'index.html')
+    
+    try:
+        user = MM.UserInfo.objects.get(id=userid)
+        stallid = user.StallID
+        print(f"查询到用户 {userid} 的档口ID: {stallid}")
+    except Exception as e:
+        print(f"查询用户信息出错: {str(e)}")
+        stallid = None
+    
     if stallid is None:
         manager_temp = MM.AuthMessage.objects.filter(UserID=userid)
         if manager_temp:
             manager_temp = MM.AuthMessage.objects.filter(UserID=userid, Validity=1)
             if manager_temp:
+                print("用户有待审核的认证申请")
                 return render(request, 'auth.html', {
                     'success': True,
                     'msg': '审核尚未通过',
                     'back': True
                 })
             else:
+                print("用户的认证申请未通过")
                 return render(request, 'auth.html', {
                     'success': True,
                     'msg': '申请未审核通过，可重新申请',
                     'back': False
                 })
         else:
+            print("用户未提交认证申请")
             return render(request, 'auth.html')
-    return render(request, 'manager.html')
+    
+    print("用户已绑定档口，显示商家管理页面")
+    # 确保Cookie正确设置
+    response = render(request, 'manager.html')
+    
+    # 重新设置Cookie，确保它们存在且有效
+    if not request.COOKIES.get('userid'):
+        response.set_cookie('userid', str(userid), path='/', max_age=60 * 60 * 24 * 3)
+    if not request.COOKIES.get('usertype'):
+        response.set_cookie('usertype', str(usertype), path='/', max_age=60 * 60 * 24 * 3)
+    if not request.COOKIES.get('username'):
+        response.set_cookie('username', username, path='/', max_age=60 * 60 * 24 * 3)
+    
+    return response
 
 
 def get_stalls(request):
