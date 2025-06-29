@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Review(models.Model):
+
     UserID = models.IntegerField(verbose_name="用户ID")
     Username = models.CharField(verbose_name="用户名", max_length=40)
     Rating = models.IntegerField(verbose_name="评分")

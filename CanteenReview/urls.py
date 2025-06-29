@@ -30,6 +30,12 @@ from admin import views
 from merchant.views import get_stall_reviews, generate_weekly_report, get_report_history, get_merchant_stalls, get_report_detail
 from django.conf import settings
 from django.conf.urls.static import static
+from summary.views import ranking
+from summary.views import ranking_sumup
+from summary.views import ranking_dishes
+from summary.views import ranking_restaurant
+from summary.views import ranking_seller
+
 
 urlpatterns = [
     path('index.html', index),
@@ -57,6 +63,13 @@ urlpatterns = [
     path('get_canteens/', get_canteens, name='get_canteens'),
     path('get_stalls/', get_stalls, name='get_stalls'),
     path('get_dishes/', get_dishes, name='get_dishes'),
+
+    #path('ranking.html', views.rank, name='ranking'),  # 你需要在views.py中定义'views.rank'方法
+    path('ranking_seller/', ranking_seller, name='ranking_seller'),
+    path('ranking_sumup/', ranking_sumup, name='ranking_sumup'),
+    path('ranking_restaurant.html', ranking_restaurant, name='ranking_restaurant'),  # 餐厅排行榜页面
+    path('ranking_dishes.html', ranking_dishes, name='ranking_dishes'),  # 菜品排行榜页面
+
     path('submit_auth/', submit_auth, name='submit_auth'),
     path('submit_feedback/', submit_feedback, name='submit_feedback'),
     path('submit_comment/', submit_comment, name='submit_comment'),
