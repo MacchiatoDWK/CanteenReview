@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ item.DishName }} - 菜品详情</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+            color: #333;
+            background: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        .description {
+            margin: 15px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .reviews {
+            margin-top: 30px;
+        }
+        .review-item {
+            background: white;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 8px #ddd;
+        }
+        .review-header {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .rating {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>{{ item.DishName }}</h1>
+
+<div class="description">
+    <strong>菜品描述：</strong><br />
+    {{ item.Description|linebreaksbr }}
+</div>
+
+<div class="reviews">
+    <h2>用户评论 ({{ reviews.count }})</h2>
+
+    {% if reviews %}
+        {% for comment in reviews %}
+            <div class="review-item">
+                <div class="review-header">
+                    {{ comment.Username|default:"匿名用户" }}
+                    <span class="rating">评分：{{ comment.Rating }}/5</span>
+                </div>
+                <div class="review-content">
+                    {{ comment.Describe|linebreaksbr }}
+                </div>
+                <div class="timestamp">
+                    评论时间：{{ comment.Timestamp|date:"Y-m-d H:i" }}
+                </div>
+             
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>暂无评论，快来发表第一个评论吧！</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

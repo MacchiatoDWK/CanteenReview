@@ -10,8 +10,6 @@ class Review(models.Model):
     ObjType = models.IntegerField(verbose_name="被评价对象类型")
     ObjID = models.IntegerField(verbose_name="被评价对象ID")
 
-
 class Image(models.Model):
     ReviewID = models.IntegerField(verbose_name="评论ID")
     ImageURL = models.CharField(verbose_name="图片地址", max_length=255)
-
