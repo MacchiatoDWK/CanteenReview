@@ -20,11 +20,8 @@
         }
         .main-container {
             display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .left-container, .right-container {
-            width: 48%;
+            flex-direction: column; /* 改为垂直布局 */
+            gap: 30px;
         }
         .card {
             margin-bottom: 20px;
@@ -91,60 +88,56 @@
 
     <div class="container">
         <div class="main-container">
-            <!-- 左侧餐厅总结部分 -->
-            <div class="left-container">
-                <div class="outer-card">
-                    <h1 class="text-center header-title">餐厅总结</h1>
+            <!-- 餐厅总结部分 -->
+            <div class="outer-card">
+                <h1 class="text-center header-title">餐厅总结</h1>
 
-                    <!-- 动态生成餐厅信息 -->
-                    {% for restaurant in restaurant_ratings %}
-                        <div class="card">
-                            <h2 class="card-title">{{ restaurant.restaurant_name }}</h2>
-                            <p class="card-text">评论数：{{ restaurant.review_count }} 条 | 评分：{{ restaurant.rating }} / 5.0</p>
+                <!-- 动态生成餐厅信息 -->
+                {% for restaurant in restaurant_ratings %}
+                    <div class="card">
+                        <h2 class="card-title">{{ restaurant.restaurant_name }}</h2>
+                        <p class="card-text">评论数：{{ restaurant.review_count }} 条 | 评分：{{ restaurant.rating }} / 5.0</p>
 
-                            <div class="improvement">
-                                <strong>有待改进：</strong>
-                                <ul>
-                                    <li>{{ restaurant.restaurant_summary }}</li>
-                                </ul>
-                            </div>
-
-                            <p><strong>评级：</strong>{{ restaurant.category }}</p>
+                        <div class="improvement">
+                            <strong>有待改进：</strong>
+                            <ul>
+                                <li>{{ restaurant.restaurant_summary }}</li>
+                            </ul>
                         </div>
-                    {% endfor %}
-                </div>
+
+                        <p><strong>评级：</strong>{{ restaurant.category }}</p>
+                    </div>
+                {% endfor %}
             </div>
 
-            <!-- 右侧菜品评分总结部分 -->
-            <div class="right-container">
-                <div class="outer-card">
-                    <h1 class="text-center header-title">上周菜品评分</h1>
+            <!-- 菜品评分总结部分 -->
+            <div class="outer-card">
+                <h1 class="text-center header-title">上周菜品评分</h1>
 
-                    <!-- 好评榜 -->
-                    <div class="card">
-                        <h2 class="card-title">上周好评榜</h2>
-                        <ul class="list-group">
-                            {% for top in top_five %}
-                                <li class="list-group-item">
-                                    <span class="highlight-dish">{{ top.dish_name }}</span>（档口：<span class="highlight-stall">{{ top.stall_name }}</span>） | 评分：{{ top.rating|floatformat:1 }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <p class="summary-text">{{ top_five_summary }}</p>
-                    </div>
+                <!-- 好评榜 -->
+                <div class="card">
+                    <h2 class="card-title">上周好评榜</h2>
+                    <ul class="list-group">
+                        {% for top in top_five %}
+                            <li class="list-group-item">
+                                <span class="highlight-dish">{{ top.dish_name }}</span>（档口：<span class="highlight-stall">{{ top.stall_name }}</span>） | 评分：{{ top.rating|floatformat:1 }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="summary-text">{{ top_five_summary }}</p>
+                </div>
 
-                    <!-- 待改进榜 -->
-                    <div class="card">
-                        <h2 class="card-title">有待改进榜</h2>
-                        <ul class="list-group">
-                            {% for bottom in bottom_five %}
-                                <li class="list-group-item">
-                                    <span class="highlight-dish">{{ bottom.dish_name }}</span>（档口：<span class="highlight-stall">{{ bottom.stall_name }}</span>） | 评分：{{ bottom.rating|floatformat:1 }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <p class="summary-text">{{ bottom_five_summary }}</p>
-                    </div>
+                <!-- 待改进榜 -->
+                <div class="card">
+                    <h2 class="card-title">有待改进榜</h2>
+                    <ul class="list-group">
+                        {% for bottom in bottom_five %}
+                            <li class="list-group-item">
+                                <span class="highlight-dish">{{ bottom.dish_name }}</span>（档口：<span class="highlight-stall">{{ bottom.stall_name }}</span>） | 评分：{{ bottom.rating|floatformat:1 }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="summary-text">{{ bottom_five_summary }}</p>
                 </div>
             </div>
         </div>
