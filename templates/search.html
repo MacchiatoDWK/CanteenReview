@@ -4,24 +4,93 @@
     <meta charset="UTF-8" />
     <title>菜品搜索 - 食堂评价系统</title>
     <style>
-        body { font-family: "Microsoft YaHei", sans-serif; background: #f9f9f9; margin: 0; padding: 20px;}
-        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 10px #ccc; border-radius: 8px; }
-        h1 { color: #333; }
-        form { margin-bottom: 30px; }
-        input[type="text"] { width: 70%; padding: 10px; font-size: 16px; border: 1px solid #aaa; border-radius: 4px; }
-        button { padding: 10px 20px; font-size: 16px; background: #28a745; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #218838; }
-        ul { list-style: none; padding: 0; }
-        li { border-bottom: 1px solid #eee; padding: 10px 0; }
-        a.detail-link { color: #007bff; text-decoration: none; }
-        a.detail-link:hover { text-decoration: underline; }
-        .dish-name { font-size: 18px; font-weight: bold; color: #222; }
-        .info { color: #555; margin-top: 5px; }
-        .no-result { color: #999; font-style: italic; }
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #fff89a, #f9f9f9);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px #ccc;
+            border-radius: 8px;
+            position: relative;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+            background: #f0932b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        a.detail-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a.detail-link:hover {
+            text-decoration: underline;
+        }
+        .dish-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+        }
+        .info {
+            color: #555;
+            margin-top: 5px;
+        }
+        .no-result {
+            color: #999;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <a class="back-button" href="{% url 'index' %}">&larr; 返回主页</a>
+
     <h1>菜品搜索</h1>
     <form method="get" action="{% url 'search' %}">
         <input type="text" name="q" placeholder="请输入菜品名称" value="{{ query }}" autofocus />
