@@ -144,7 +144,16 @@ def manager(request):
                 })
         else:
             return render(request, 'auth.html')
-    return render(request,'manager.html')
+
+
+    stall = AM.StallInfo.objects.get(id=stallid)
+    canteenid = stall.Canteen_id
+    canteen = AM.CanteenInfo.objects.get(id=canteenid)
+    context = {
+        'stall_name': stall.StallName,
+        'canteen_name': canteen.CanteenName,
+    }
+    return render(request,'manager.html', context)
 
 
 def get_stalls(request):

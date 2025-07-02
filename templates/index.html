@@ -238,7 +238,7 @@
               <div>${comment.text}</div>
               <div class="comment-images">${comment.images.map(url => `<img src="${url}" onclick="showImage('${url}')">`).join('')}</div>
               <br>
-              <div>${comment.timestamp}</div>
+              <div>${formatDate(comment.timestamp)}</div>
             `;
 
             commentList.appendChild(card);
@@ -255,14 +255,22 @@
       modalImg.src = url;
     }
 
+    function formatDate(timestamp) {
+        let date = new Date(timestamp);
+        date.setTime(date.getTime()+1000*60*60*8);
+        const Y = date.getFullYear();
+        const M = String(date.getMonth() + 1).padStart(2, '0');
+        const D = String(date.getDate()).padStart(2, '0');
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${Y}-${M}-${D} ${h}:${m}`;
+  }
+
     window.addEventListener('scroll', () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
         loadComments();
       }
     });
-
-  {#// 首次加载#}
-  {#  window.addEventListener('DOMContentLoaded', loadComments);#}
     window.addEventListener("DOMContentLoaded", function () {
         loadComments();
 

@@ -124,7 +124,7 @@
                   {% endfor %}
                 </div>
                 <br>
-                <div>{{ comment.Timestamp }}</div>
+                <div class="comment-time" data-timestamp="{{ comment.Timestamp }}"></div>
             </div>
         {% endfor %}
     {% else %}
@@ -142,6 +142,23 @@
     modalImg.src = url;
     modal.style.display = "flex";
   }
+
+  function formatDate(timestamp) {
+        let date = new Date(timestamp);
+        date.setTime(date.getTime()+1000*60*60*8);
+        const Y = date.getFullYear();
+        const M = String(date.getMonth() + 1).padStart(2, '0');
+        const D = String(date.getDate()).padStart(2, '0');
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${Y}-${M}-${D} ${h}:${m}`;
+  }
+
+  document.querySelectorAll('.comment-time').forEach(div => {
+    const raw = div.dataset.timestamp;
+    div.textContent = formatDate(raw);
+  });
+
 </script>
 </body>
 </html>

@@ -208,7 +208,7 @@
               <div>${comment.text}</div>
               <div class="comment-images">${comment.images.map(url => `<img src="${url}" onclick="showImage('${url}')">`).join('')}</div>
               <br>
-              <div>${comment.timestamp}</div>
+              <div>${formatDate(comment.timestamp)}</div>
               <button class="delete-btn" data-review-id="${comment.reviewId}">X</button>
             `;
 
@@ -219,6 +219,17 @@
           currentPage++;
           loading = false;
         });
+    }
+
+    function formatDate(timestamp) {
+        let date = new Date(timestamp);
+        date.setTime(date.getTime()+1000*60*60*8);
+        const Y = date.getFullYear();
+        const M = String(date.getMonth() + 1).padStart(2, '0');
+        const D = String(date.getDate()).padStart(2, '0');
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${Y}-${M}-${D} ${h}:${m}`;
     }
 
     function showImage(url) {

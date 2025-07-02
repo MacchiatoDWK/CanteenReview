@@ -79,6 +79,9 @@ WSGI_APPLICATION = 'CanteenReview.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
         'NAME': 'canteenreview',
         'USER': 'root',
         'PASSWORD': '20040615',
