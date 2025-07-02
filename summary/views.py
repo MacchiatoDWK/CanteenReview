@@ -296,8 +296,8 @@ def ranking_sumup(request):
         'summary': summary,  # 商家评分总结
         'top_five': top_five,  # 好评榜数据
         'bottom_five': bottom_five,  # 有待改进榜数据
-        'top_five_summary': top_five_summary,  # 好评榜总结
-        'bottom_five_summary': bottom_five_summary  # 有待改进榜总结
+        #'top_five_summary': top_five_summary,  # 好评榜总结
+        #'bottom_five_summary': bottom_five_summary  # 有待改进榜总结
     })
 
 
