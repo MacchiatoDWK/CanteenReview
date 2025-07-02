@@ -11,7 +11,8 @@ def search(request):
         results = DishInfo.objects.filter(
             Q(DishName__icontains=query) |
             Q(Description__icontains=query) |
-            Q(Stall__StallName__icontains=query)
+            Q(Stall__StallName__icontains=query)|
+            Q(Stall__Canteen__CanteenName__icontains=query)
         ).distinct()
     context = {
         'query': query,
@@ -51,3 +52,5 @@ def detail(request, item_id):
         'count': count,
     }
     return render(request, 'detail.html', context)
+def index(request):
+    return render(request, 'index.html')

@@ -44,6 +44,13 @@ urlpatterns = [
     path('add.html', addreview),
     path('search.html', search, name='search'),
     path('detail/<int:item_id>/', detail, name='detail'),
+    #path('search.html', search),
+path('search.html', search, name='search'),
+
+    #path('detail.html', detail, name='detail'),
+path('detail/<int:item_id>/', detail, name='detail'),
+    path('',index, name='index'),
+     path('search/', search, name='search'),
     path('login.html', login),
     path('manager.html', manager),
     path('my-comments.html', my_comments),
