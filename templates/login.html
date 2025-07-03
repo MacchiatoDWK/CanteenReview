@@ -198,6 +198,10 @@
         <div class="input-group">
           <label for="register-password">密码</label>
           <input type="password" id="register-password" required minlength="8" maxlength="20" placeholder="请输入密码" name = "reg_pwd"/>
+          <small id="password-hint" style="color: red; font-size: 13px; display: block; margin-top: 4px;">
+                8-20 位，需包含数字、大写和小写字母
+          </small>
+
         </div>
         <div class="input-group">
           <label for="register-confirm">确认密码</label>
@@ -218,7 +222,7 @@
             <button type="button" id="codeBtn" onclick="sendCode('register-email')">发送验证码</button>
           </div>
         </div>
-        <button class="submit-btn" type="submit" >注册</button>
+        <button class="submit-btn" type="submit" id="register-btn">注册</button>
       </form>
       <span style="color: red;">{{ error }}</span>
       <div class="switch">已有账号？<a onclick="switchToLogin()">登录</a></div>
@@ -393,6 +397,39 @@
         if (shouldShow) {
           showPopup(message)
         }
+      });
+
+      const passwordInput = document.getElementById("register-password");
+      const registerBtn = document.getElementById("register-btn");
+      const hint = document.getElementById("password-hint");
+
+      function checkPasswordStrength() {
+        const val = passwordInput.value;
+        const lengthOK = val.length >= 8 && val.length <= 20;
+        const number = /\d/.test(val);
+        const lowercase = /[a-z]/.test(val);
+        const uppercase = /[A-Z]/.test(val);
+        const passed = lengthOK && number && lowercase && uppercase;
+
+        if (passed) {
+          hint.textContent = "8-20 位，包含数字、大写和小写字母";
+          hint.style.color = "green";
+          registerBtn.disabled = false;
+          registerBtn.style.backgroundColor = "#89f0ff";
+          registerBtn.style.cursor = "pointer";
+        } else {
+          hint.textContent = "8-20 位，包含数字、大写和小写字母";
+          hint.style.color = "red";
+          registerBtn.disabled = true;
+          registerBtn.style.backgroundColor = "#ccc";
+          registerBtn.style.cursor = "not-allowed";
+        }
+      }
+
+      passwordInput.addEventListener("input", checkPasswordStrength);
+
+      window.addEventListener("DOMContentLoaded", () => {
+        checkPasswordStrength();
       });
 
   </script>

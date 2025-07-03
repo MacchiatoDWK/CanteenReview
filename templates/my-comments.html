@@ -209,7 +209,7 @@
               <div class="comment-images">${comment.images.map(url => `<img src="${url}" onclick="showImage('${url}')">`).join('')}</div>
               <br>
               <div>${formatDate(comment.timestamp)}</div>
-              <button class="delete-btn" data-review-id="${comment.reviewId}">X</button>
+              <button class="delete-btn" data-review-id="${comment.reviewId}">删除️</button>
             `;
 
             commentList.appendChild(card);
